@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {AsyncStorage,AppRegistry,View, StyleSheet,Text,Dimensions,KeyboardAvoidingView } from 'react-native';
+import {AsyncStorage,AppRegistry,View, StyleSheet,Text,Dimensions,KeyboardAvoidingView,Alert} from 'react-native';
 import { Button, FormInput, FormValidationMessage, } from 'react-native-elements';
 
 
@@ -56,8 +56,12 @@ export default class LoginScreen extends Component {
             }),
           }).then((response) => response.json())
             .then((responseJson) => {
-              AsyncStorage.setItem("userToken", responseJson.key);
-              this.props.navigation.navigate('Home');
+              if(responseJson.key){
+                AsyncStorage.setItem("userToken", responseJson.key);
+                this.props.navigation.navigate('Home');
+              }else {
+                Alert.alert("Error", "User doesn't exist")
+              }
             })
             .catch((error) => {
               console.error(error);
@@ -93,7 +97,10 @@ export default class LoginScreen extends Component {
               email: email,
             }),
           }).then((response) => {
-              console.log(response);
+              if(response.status == 200)
+                Alert.alert("Confirmation","Mail sent to " + email);
+              else
+                alert("Error: " + email);
             })
             .catch((error) => {
               console.error(error);
@@ -123,7 +130,6 @@ export default class LoginScreen extends Component {
 
               {this.state.passwordError ? <FormValidationMessage>Error password</FormValidationMessage> : null }
 
-
           <View style = {styles.buttonsContainer}>
               <Button raised title = "Login"  icon = {{ name : "person" , size : 20 }}  backgroundColor="green"
                   buttonStyle = {styles.mainButton} onPress = {this.loginUser.bind(this)}/>
@@ -133,6 +139,7 @@ export default class LoginScreen extends Component {
           </View>
               <Button raised icon = {{ name : "https" , size : 20 }} title = "Forgot password" backgroundColor="lightblue"
                   buttonStyle = {styles.passwordButton} onPress = {this.resetPassword.bind(this)}/>
+
           </KeyboardAvoidingView>
 
       );
