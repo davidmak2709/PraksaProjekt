@@ -7,7 +7,7 @@ import  AuthLoadingScreen  from './app/screens/AuthLoading/AuthLoadingScreen';
 import SignupScreen from './app/screens/Signup/SignupScreen';
 
 const AppStack = createStackNavigator({ Home: HomeScreen });
-const AuthStack = createStackNavigator({ Signup : SignupScreen ,Login: LoginScreen,  });
+const AuthStack = createStackNavigator({ Login: LoginScreen,Signup : SignupScreen ,  });
 
 export default createSwitchNavigator(
   {

@@ -150,7 +150,7 @@ export default class SignupScreen extends Component {
               </KeyboardAvoidingView>
         </ScrollView>
         <KeyboardAvoidingView style =  {styles.buttonContainer} disable>
-            <Button icon={{ name: 'clear', size : 35 }}  buttonStyle = {styles.button}  backgroundColor = "red"  />
+            <Button icon={{ name: 'clear', size : 35 }}  buttonStyle = {styles.button}  backgroundColor = "red"  onPress = {() => this.props.navigation.goBack()}/>
             <Button icon={{ name: 'done', size : 35 }}  buttonStyle = {styles.button} backgroundColor = "green"  onPress = {this.createNewUser.bind(this)}/>
         </KeyboardAvoidingView>
 

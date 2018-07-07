@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import {AsyncStorage,AppRegistry,View, StyleSheet,Text,Dimensions,KeyboardAvoidingView,Alert} from 'react-native';
 import { Button, FormInput, FormValidationMessage, } from 'react-native-elements';
-
+import ErrorDialog from "../../components/ErrorDialog";
 
 
 const {height, width} = Dimensions.get('window');
@@ -19,32 +19,41 @@ export default class LoginScreen extends Component {
         emailError : false,
         borderColorEmail : "green",
         borderColorPwd : "green",
+        errorDialogVisible : false
       };
     }
 
     loginUser(){
       const email = this.state.email;
       const password = this.state.password;
+
+      let emailErr = false;
+      let passwordErr = false;
+
       let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
 
       //provjera mail-a
       if(email == "" || !reg.test(email)){
+        emailErr = true;
         this.setState({emailError : true, borderColorEmail : "red"});
         this.emailRef.shake();
       } else{
+        emailErr = false;
         this.setState({emailError : false, borderColorEmail : "green"});
       }
 
       //provjera password-a
       if(password == ""){
+        passwordErr = true;
         this.setState({passwordError : true, borderColorPwd : "red"});
         this.passwordRef.shake();
       } else {
+        emailErr = false;
         this.setState({passwordError : false, borderColorPwd : "green",});
       }
 
       //ako nema greske poslji post na server
-      if(this.state.emailError === false && this.state.passwordError === false){
+      if(emailErr === false && passwordErr === false){
         fetch('http://46.101.226.120:8000/api/rest-auth/login/', {
             method: 'POST',
             headers: {
@@ -60,7 +69,7 @@ export default class LoginScreen extends Component {
                 AsyncStorage.setItem("userToken", responseJson.key);
                 this.props.navigation.navigate('Home');
               }else {
-                Alert.alert("Error", "User doesn't exist")
+                this.setState({errorDialogVisible :  true});
               }
             })
             .catch((error) => {
@@ -118,14 +127,14 @@ export default class LoginScreen extends Component {
           <FormInput placeholder = "Insert your Email" containerStyle = {[styles.input ,{borderColor : this.state.borderColorEmail}]}
               inputStyle = {{width : width - 100 }} ref={emailRef => this.emailRef = emailRef} underlineColorAndroid="transparent"
                autoCapitalize = "none" onSubmitEditing = { () => this.passwordRef.focus()}
-                  blurOnSubmit={false}  onChangeText = {(email) => this.setState({email})} keyboardType = "email-address"
+                  blurOnSubmit={false}  onChangeText = {(email) => this.setState({email : email, errorDialogVisible : false})} keyboardType = "email-address"
                     returnKeyType = "next" />
 
             {this.state.emailError  ? <FormValidationMessage>Error email</FormValidationMessage> : null }
 
           <FormInput placeholder = "Insert your Password" containerStyle = {[styles.input ,{borderColor : this.state.borderColorPwd}]}
               inputStyle = {{width : width - 100}}  secureTextEntry = {true} underlineColorAndroid="transparent"
-               autoCapitalize = "none" ref={passwordRef => this.passwordRef = passwordRef} onChangeText = {(password) => this.setState({password})}
+               autoCapitalize = "none" ref={passwordRef => this.passwordRef = passwordRef} onChangeText = {(password) => this.setState({password : password, errorDialogVisible : false})}
                 returnKeyType = "done"/>
 
               {this.state.passwordError ? <FormValidationMessage>Error password</FormValidationMessage> : null }
@@ -140,6 +149,7 @@ export default class LoginScreen extends Component {
               <Button raised icon = {{ name : "https" , size : 20 }} title = "Forgot password" backgroundColor="lightblue"
                   buttonStyle = {styles.passwordButton} onPress = {this.resetPassword.bind(this)}/>
 
+          <ErrorDialog visible = {this.state.errorDialogVisible} message = "User with this creds doesn't exist"/>
           </KeyboardAvoidingView>
 
       );
