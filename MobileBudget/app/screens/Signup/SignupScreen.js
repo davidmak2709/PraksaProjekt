@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Text ,View, AppRegistry, StyleSheet, Dimensions, AsyncStorage,
-          KeyboardAvoidingView, ScrollView,Keyboard, Alert } from 'react-native';
-import {FormInput, Button} from 'react-native-elements';
+import { View, AppRegistry, StyleSheet, Dimensions, AsyncStorage, TouchableHighlight,
+          KeyboardAvoidingView, ScrollView,Keyboard, Alert, Modal } from 'react-native';
+import {FormInput, Button, Text, Icon} from 'react-native-elements';
 
 const {height, width} = Dimensions.get('window');
 
@@ -26,6 +26,7 @@ export default class SignupScreen extends Component {
       borderColorUsername : "green",
       borderColorEmail : "green",
       borderColorPassword : "green",
+      modalVisible : false,
     };
   }
 
@@ -102,6 +103,12 @@ export default class SignupScreen extends Component {
           }
   }
 
+  setModalVisible() {
+    console.log("fa");
+   this.setState({modalVisible: !this.state.modalVisible});
+ }
+
+
   render() {
     return (
     <View style = {{flex : 1,  backgroundColor : "ghostwhite"}}>
@@ -132,9 +139,38 @@ export default class SignupScreen extends Component {
               </KeyboardAvoidingView>
         </ScrollView>
         <KeyboardAvoidingView style =  {styles.buttonContainer} disable>
-            <Button icon={{ name: 'clear', size : 35 }}  buttonStyle = {styles.button}  backgroundColor = "red" onPress = {() => this.props.navigation.goBack()}/>
+            <Button icon={{ name: 'clear', size : 35 }}  buttonStyle = {styles.button}  backgroundColor = "red" onPress = { this.setModalVisible.bind(this)}/>
             <Button icon={{ name: 'done', size : 35 }}  buttonStyle = {styles.button} backgroundColor = "green"  onPress = {this.createNewUser.bind(this)}/>
         </KeyboardAvoidingView>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            console.log("Close.");
+          }}>
+            <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                <View style={{width: width * 0.8, height: height * 0.8, backgroundColor : "white"}}>
+                  <View style = {{flex : 1, flexDirection : "row", justifyContent : "space-between", alignItems : "flex-start", marginLeft : 25, marginRight : 25}}>
+                      <Text h4 style = {{marginTop : 10}}>Error</Text>
+                      <Icon containerStyle = {{marginTop : 5}} name='alert-decagram'  type='material-community'  color='#517fa4' size = {35} color = "red"/>
+                  </View>
+                  <View style = {{flex : 3,  justifyContent : "space-evenly", alignItems : "flex-start", marginLeft : 10, marginRight : 10}}>
+                    <Text>Error </Text>
+                  </View>
+                  <View style = {{flex : 1, justifyContent : "flex-end", alignItems : "flex-end",marginRight : 50, marginBottom : 50}}>
+                    <TouchableHighlight
+                      onPress={() => {
+                        this.setModalVisible()
+                      }}>
+                      <Text h3 style = {{color:"green"}}>Close</Text>
+                    </TouchableHighlight>
+                  </View>
+                </View>
+            </View>
+        </Modal>
+
       </View>
           );
   }

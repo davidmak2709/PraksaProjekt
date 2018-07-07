@@ -16,7 +16,7 @@ export default class AuthLoadingScreen extends React.Component {
 
   _bootstrapAsync = async () => {
     //za slučaj da se krivo ulogiras koristi ovo
-    AsyncStorage.removeItem("userToken");
+    // AsyncStorage.removeItem("userToken");
     const userToken = await AsyncStorage.getItem('userToken');
 
     console.log(userToken);
