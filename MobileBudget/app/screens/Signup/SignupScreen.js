@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, AppRegistry, StyleSheet, Dimensions, AsyncStorage, TouchableHighlight,
-          KeyboardAvoidingView, ScrollView,Keyboard, Alert, Modal } from 'react-native';
-import {FormInput, Button, Text, Icon} from 'react-native-elements';
+import { View, AppRegistry, StyleSheet, Dimensions, AsyncStorage,
+          KeyboardAvoidingView, ScrollView,Keyboard} from 'react-native';
+import {FormInput, Button, Text} from 'react-native-elements';
+import ErrorDialog from "../../components/ErrorDialog";
 
 const {height, width} = Dimensions.get('window');
 
@@ -27,6 +28,7 @@ export default class SignupScreen extends Component {
       borderColorEmail : "green",
       borderColorPassword : "green",
       modalVisible : false,
+      errorMessage : ""
     };
   }
 
@@ -36,35 +38,46 @@ export default class SignupScreen extends Component {
     const password = this.state.password;
     const rpassword = this.state.rpassword;
 
+    let usernameErr = false;
+    let emailErr = false;
+    let passwordErr = false;
+
+
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
 
     //provjera username
     if(username == "" || username.lenght < 6){
       this.setState({usernameError : true, borderColorUsername : "red"});
+      usernameErr = true;
       this.usernameRef.shake();
     } else {
+      usernameErr = false;
       this.setState({usernameError : false, borderColorUsername : "green"});
     }
 
     //provjera mail-a
     if(email == "" || !reg.test(email)){
       this.setState({emailError : true, borderColorEmail : "red"});
+      emailErr = true;
       this.emailRef.shake();
     } else{
+      emailErr= false;
       this.setState({emailError : false, borderColorEmail : "green"});
     }
 
     //provjera password-a
     if(password == "" || password.lenght < 9 || password != rpassword){
       this.setState({passwordError : true, borderColorPassword : "red"});
+      passwordErr = true;
       this.passwordRef.shake();
       this.repeatPasswordRef.shake();
     } else {
+      passwordErr = false;
       this.setState({passwordError : false, borderColorPassword : "green",});
     }
 
-    if(this.state.usernameError === false && this.state.passwordError === false
-          && this.state.emailError === false){
+    if(usernameErr === false && passwordErr === false
+          && emailErr === false){
 
             fetch('http://46.101.226.120:8000/api/rest-auth/registration/', {
                 method: 'POST',
@@ -80,6 +93,7 @@ export default class SignupScreen extends Component {
               }).then((response) => response.json())
                 .then((responseJson) => {
                   if(responseJson.key){
+                    this.setState({errorMessage : ""})
                     AsyncStorage.setItem("userToken", responseJson.key);
                     this.props.navigation.navigate('Home');
                   }else {
@@ -94,7 +108,8 @@ export default class SignupScreen extends Component {
                     if(responseJson.password1)
                       errorMsg = errorMsg.concat("\n" + responseJson.password1.join("\n"));
 
-                    Alert.alert("Error",errorMsg);
+                    this.setState({errorMessage : errorMsg, modalVisible : true});
+
                   }
                 })
                 .catch((error) => {
@@ -103,73 +118,43 @@ export default class SignupScreen extends Component {
           }
   }
 
-  setModalVisible() {
-    console.log("fa");
-   this.setState({modalVisible: !this.state.modalVisible});
- }
 
 
   render() {
     return (
-    <View style = {{flex : 1,  backgroundColor : "ghostwhite"}}>
+    <View style = {{flex : 1,  backgroundColor : "ghostwhite"  }}>
         <ScrollView>
               <KeyboardAvoidingView style = {styles.container}  behavior="padding" enabled>
                 <Text style = {{fontSize : 32, marginTop : 5 }}>Welcome!</Text>
 
                 <FormInput placeholder = "Insert your Username (min. 5 char)" containerStyle = {[styles.input ,{borderColor : this.state.borderColorUsername}]}
-                  inputStyle = {{width : width - 100}}  ref={usernameRef => this.usernameRef = usernameRef} onChangeText = {(username) => this.setState({username})}
+                  inputStyle = {{width : width - 100}}  ref={usernameRef => this.usernameRef = usernameRef} onChangeText = {(username) => this.setState({username : username, modalVisible : false})}
                     onSubmitEditing = { () => this.emailRef.focus()} underlineColorAndroid="transparent" blurOnSubmit={false}
                       returnKeyType = "next" />
 
                 <FormInput placeholder = "Insert your Email" containerStyle = {[styles.input ,{borderColor : this.state.borderColorEmail}]}
                     inputStyle = {{width : width - 100}} underlineColorAndroid="transparent" autoCapitalize = "none"
-                      onChangeText = {(email) => this.setState({email})} onSubmitEditing = { () => this.passwordRef.focus()} blurOnSubmit={false}
+                      onChangeText = {(email) => this.setState({email :  email, modalVisible : false})} onSubmitEditing = { () => this.passwordRef.focus()} blurOnSubmit={false}
                         keyboardType = "email-address" returnKeyType = "next"   ref={emailRef => this.emailRef = emailRef}/>
 
                 <FormInput placeholder = "Insert your Password (min. 8 char)" containerStyle = {[styles.input ,{borderColor : this.state.borderColorPassword}]}
                     inputStyle = {{width : width - 100}}  secureTextEntry = {true} underlineColorAndroid="transparent" autoCapitalize = "none"
-                      onChangeText = {(password) => this.setState({password})} blurOnSubmit={false} returnKeyType = "next"
+                      onChangeText = {(password) => this.setState({password : password, modalVisible : false})} blurOnSubmit={false} returnKeyType = "next"
                         onSubmitEditing = { () => this.repeatPasswordRef.focus()} ref={passwordRef => this.passwordRef = passwordRef}/>
 
                 <FormInput placeholder = "Repeat your Password" containerStyle = {[styles.input ,{borderColor : this.state.borderColorPassword}]}
                   inputStyle = {{width : width - 100}}  secureTextEntry = {true} underlineColorAndroid="transparent" autoCapitalize = "none"
-                    onChangeText = {(rpassword) => this.setState({rpassword})} blurOnSubmit={false} returnKeyType = "done"
+                    onChangeText = {(rpassword) => this.setState({rpassword : rpassword, modalVisible : false})} blurOnSubmit={false} returnKeyType = "done"
                       onSubmitEditing = { () => Keyboard.dismiss()} ref={repeatPasswordRef => this.repeatPasswordRef = repeatPasswordRef}/>
 
               </KeyboardAvoidingView>
         </ScrollView>
         <KeyboardAvoidingView style =  {styles.buttonContainer} disable>
-            <Button icon={{ name: 'clear', size : 35 }}  buttonStyle = {styles.button}  backgroundColor = "red" onPress = { this.setModalVisible.bind(this)}/>
+            <Button icon={{ name: 'clear', size : 35 }}  buttonStyle = {styles.button}  backgroundColor = "red"  />
             <Button icon={{ name: 'done', size : 35 }}  buttonStyle = {styles.button} backgroundColor = "green"  onPress = {this.createNewUser.bind(this)}/>
         </KeyboardAvoidingView>
 
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={this.state.modalVisible}
-          onRequestClose={() => {
-            console.log("Close.");
-          }}>
-            <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-                <View style={{width: width * 0.8, height: height * 0.8, backgroundColor : "white"}}>
-                  <View style = {{flex : 1, flexDirection : "row", justifyContent : "space-between", alignItems : "flex-start", marginLeft : 25, marginRight : 25}}>
-                      <Text h4 style = {{marginTop : 10}}>Error</Text>
-                      <Icon containerStyle = {{marginTop : 5}} name='alert-decagram'  type='material-community'  color='#517fa4' size = {35} color = "red"/>
-                  </View>
-                  <View style = {{flex : 3,  justifyContent : "space-evenly", alignItems : "flex-start", marginLeft : 10, marginRight : 10}}>
-                    <Text>Error </Text>
-                  </View>
-                  <View style = {{flex : 1, justifyContent : "flex-end", alignItems : "flex-end",marginRight : 50, marginBottom : 50}}>
-                    <TouchableHighlight
-                      onPress={() => {
-                        this.setModalVisible()
-                      }}>
-                      <Text h3 style = {{color:"green"}}>Close</Text>
-                    </TouchableHighlight>
-                  </View>
-                </View>
-            </View>
-        </Modal>
+        <ErrorDialog visible = {this.state.modalVisible} message = {this.state.errorMessage}/>
 
       </View>
           );
@@ -183,7 +168,6 @@ const styles = StyleSheet.create({
       flexDirection : "column",
       justifyContent : "center",
       alignItems : "center",
-
     },
     input : {
       margin : 5,
