@@ -15,8 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls import url
+from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('restapi.urls')),
+    url(r'^', include('django.contrib.auth.urls')),
+    url(r'^accounts/login/$', RedirectView.as_view(url='https://www.google.com'), name='login'), # TODO: kada Toni napravi webapp redirect na login od webapp
 ]
