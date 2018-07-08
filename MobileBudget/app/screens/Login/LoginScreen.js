@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {AsyncStorage,AppRegistry,View, StyleSheet,Text,Dimensions,KeyboardAvoidingView,Alert} from 'react-native';
+import {AsyncStorage,AppRegistry,View, StyleSheet,Text,Dimensions,KeyboardAvoidingView,Alert, Keyboard} from 'react-native';
 import { Button, FormInput, FormValidationMessage, } from 'react-native-elements';
 import ErrorDialog from "../../components/ErrorDialog";
 
@@ -31,6 +31,8 @@ export default class LoginScreen extends Component {
       let passwordErr = false;
 
       let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
+
+      Keyboard.dismiss();
 
       //provjera mail-a
       if(email == "" || !reg.test(email)){
@@ -86,6 +88,8 @@ export default class LoginScreen extends Component {
       let emailError = false;
       let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
+      Keyboard.dismiss();
+
       if(email == "" || !reg.test(email)){
         emailError = true;
         this.setState({borderColorEmail : "red"});
@@ -133,9 +137,9 @@ export default class LoginScreen extends Component {
             {this.state.emailError  ? <FormValidationMessage>Error email</FormValidationMessage> : null }
 
           <FormInput placeholder = "Insert your Password" containerStyle = {[styles.input ,{borderColor : this.state.borderColorPwd}]}
-              inputStyle = {{width : width - 100}}  secureTextEntry = {true} underlineColorAndroid="transparent"
-               autoCapitalize = "none" ref={passwordRef => this.passwordRef = passwordRef} onChangeText = {(password) => this.setState({password : password, errorDialogVisible : false})}
-                returnKeyType = "done"/>
+              inputStyle = {{width : width - 100}}  secureTextEntry = {true} underlineColorAndroid="transparent" onSubmitEditing = { () => Keyboard.dismiss()}
+               autoCapitalize = "none" ref={passwordRef => this.passwordRef = passwordRef} returnKeyType = "done"
+                onChangeText = {(password) => this.setState({password : password, errorDialogVisible : false})}/>
 
               {this.state.passwordError ? <FormValidationMessage>Error password</FormValidationMessage> : null }
 
@@ -149,7 +153,7 @@ export default class LoginScreen extends Component {
               <Button raised icon = {{ name : "https" , size : 20 }} title = "Forgot password" backgroundColor="lightblue"
                   buttonStyle = {styles.passwordButton} onPress = {this.resetPassword.bind(this)}/>
 
-          <ErrorDialog visible = {this.state.errorDialogVisible} message = "User with this creds doesn't exist"/>
+                  <ErrorDialog visible = {this.state.errorDialogVisible} message = "User with this creds doesn't exist"/>
           </KeyboardAvoidingView>
 
       );
@@ -192,5 +196,3 @@ const styles = StyleSheet.create({
     }
 
 });
-
-AppRegistry.registerComponent('LoginScreen', () => LoginScreen);

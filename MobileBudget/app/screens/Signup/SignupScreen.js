@@ -192,6 +192,3 @@ const styles = StyleSheet.create({
       alignItems : "flex-end"
     }
 });
-
-
-AppRegistry.registerComponent('SignupScreen', () => SignupScreen);

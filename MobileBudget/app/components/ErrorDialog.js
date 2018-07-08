@@ -31,7 +31,7 @@ export default class ErrorDialog extends Component {
   render(){
     return(
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={this.state.modalVisible}
         onRequestClose={() => {
@@ -41,7 +41,7 @@ export default class ErrorDialog extends Component {
               <View style={styles.contentContainer}>
                 <View style = {styles.header}>
                     <Text h3 style = {{marginTop : 10}}>Error</Text>
-                    <Icon containerStyle = {{marginTop : 5}} name='alert-decagram'  type='material-community'  color='#517fa4' size = {35} color = "red"/>
+                    <Icon containerStyle = {{marginTop : 5}} name='alert-decagram'  type='material-community' size = {35} color = "red"/>
                 </View>
                 <View style = {styles.main}>
                   <Text style = {{ fontSize : 16}}>{this.props.message} </Text>
@@ -66,7 +66,8 @@ const styles = StyleSheet.create({
       flex: 1,
       flexDirection: 'column',
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
+      backgroundColor : 'rgba(0,0,0,0.5)'
     },
     contentContainer : {
       width: width * 0.8,
