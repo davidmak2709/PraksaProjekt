@@ -148,7 +148,7 @@ export default class LoginScreen extends Component {
                   buttonStyle = {styles.mainButton} onPress = {this.loginUser.bind(this)}/>
 
               <Button raised title = "Sign Up" icon = {{ name : "person-add" , size : 20 }} backgroundColor="darkred"
-                  buttonStyle = {styles.mainButton} onPress = {() => navigate('Signup')}/>
+                  buttonStyle = {styles.mainButton} onPress = {() => this.props.navigation.navigate('Signup')}/>
           </View>
               <Button raised icon = {{ name : "https" , size : 20 }} title = "Forgot password" backgroundColor="lightblue"
                   buttonStyle = {styles.passwordButton} onPress = {this.resetPassword.bind(this)}/>

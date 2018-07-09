@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import { View, AppRegistry, StyleSheet, Dimensions, AsyncStorage,
           KeyboardAvoidingView, ScrollView,Keyboard} from 'react-native';
-import {FormInput, Button, Text} from 'react-native-elements';
+import {FormInput, Button, Text, SocialIcon} from 'react-native-elements';
 import ErrorDialog from "../../components/ErrorDialog";
 
 const {height, width} = Dimensions.get('window');
-
-//TODO napraviti u modal da se ispisuju poruuke
-//TODO redirekcija na prvi wallet
 
 export default class SignupScreen extends Component {
   static navigationOptions = {
@@ -95,7 +92,7 @@ export default class SignupScreen extends Component {
                   if(responseJson.key){
                     this.setState({errorMessage : ""})
                     AsyncStorage.setItem("userToken", responseJson.key);
-                    this.props.navigation.navigate('Home');
+                    this.props.navigation.replace('NewWallet');
                   }else {
                     let errorMsg = "";
 
@@ -150,8 +147,8 @@ export default class SignupScreen extends Component {
               </KeyboardAvoidingView>
         </ScrollView>
         <KeyboardAvoidingView style =  {styles.buttonContainer} disable>
-            <Button icon={{ name: 'clear', size : 35 }}  buttonStyle = {styles.button}  backgroundColor = "red"  onPress = {() => this.props.navigation.goBack()}/>
-            <Button icon={{ name: 'done', size : 35 }}  buttonStyle = {styles.button} backgroundColor = "green"  onPress = {this.createNewUser.bind(this)}/>
+          <SocialIcon raised style = {[styles.button, {backgroundColor : "red"}]} button  type='remove' onPress = {() => this.props.navigation.goBack()}/>
+          <SocialIcon raised style = {[styles.button, {backgroundColor : "green"}]} button  type='save' onPress = {this.createNewUser.bind(this)}/>
         </KeyboardAvoidingView>
 
         <ErrorDialog visible = {this.state.modalVisible} message = {this.state.errorMessage}/>
