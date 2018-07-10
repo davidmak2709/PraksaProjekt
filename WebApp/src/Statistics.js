@@ -6,36 +6,24 @@ import ReactFC from 'react-fusioncharts';
 import axios from 'axios';
 var dataGraph2;
 
-function formatDate(history) {
-    var d = new Date()
-    d.setDate(d.getDate() - history);
-    var month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
 
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
-
-    return [year, month, day].join('-');
-}
 function getData(){
 
-  axios.get('https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&apikey=JU29AGJ4M2SEODU5')
+  axios.get('https://www.quandl.com/api/v3/datasets/EOD/AAPL.json?api_key=CXvjxs9TMu42wRzsKrXi')
  .then(function (response) {
    console.log(response);
-   console.log(formatDate(5),formatDate(4),formatDate(3),formatDate(2));
-   window.alert("API zahtjev success " + response.data["Time Series (Daily)"][formatDate(2)]["1. open"]);
+   console.log(response.data.dataset.data['0']['0']);
    dataGraph2 = {
        chart:
-       {caption:response.data["Meta Data"]["2. Symbol"],
-       subCaption:"Last 5 days",
+       {caption:response.data.dataset.dataset_code,
+       subCaption:"Last 5 records",
        numberPrefix:"$",
        theme:"ocean"}
-       ,data:[{label:formatDate(1), value:response.data["Time Series (Daily)"][formatDate(2)]["1. open"]},
-           {label:formatDate(2),value:response.data["Time Series (Daily)"][formatDate(2)]["1. open"]},
-           {label:formatDate(3),value:response.data["Time Series (Daily)"][formatDate(3)]["1. open"]},
-           {label:formatDate(4),value:response.data["Time Series (Daily)"][formatDate(3)]["1. open"]},
-           {label:formatDate(5),value:response.data["Time Series (Daily)"][formatDate(3)]["1. open"]}]};
+       ,data:[{label:response.data.dataset.data['4']['0'], value:response.data.dataset.data['4']['1']},
+           {label:response.data.dataset.data['3']['0'],value:response.data.dataset.data['3']['1']},
+           {label:response.data.dataset.data['2']['0'],value:response.data.dataset.data['2']['1']},
+           {label:response.data.dataset.data['1']['0'],value:response.data.dataset.data['1']['1']},
+           {label:response.data.dataset.data['0']['0'],value:response.data.dataset.data['0']['1']}]};
            Charts(FusionCharts);
            FusionCharts.ready(function(){
 

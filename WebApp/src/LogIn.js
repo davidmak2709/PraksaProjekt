@@ -15,7 +15,7 @@ constructor(props){
  }
 
  handleClick(event){
-   var apiBaseUrl = "http://localhost:4000/api/";
+   var apiBaseUrl = "http://46.101.226.120:8000/api/";
    var self = this;
    var payload={
    "email":this.state.username,
@@ -23,29 +23,35 @@ constructor(props){
    }
 
   var instance = axios.create({
-           baseURL: 'http://46.101.226.120:8000/api',
+           baseURL: apiBaseUrl,
            timeout: 2000,
-           withCredentials: true,
+
 
        });
 
-       instance.get('/users/')
+  instance.get('/users/')
            .then(function (response) {
                console.log(response);
+               window.alert(response.data['0'].email);
            })
            .catch(function (error) {
                console.log(error);
-           });
 
-  const testURL = 'http://46.101.226.120:8000/api/users/';
- 	const myInit = {
-         		method: 'GET',
-         	};
-  const myRequest = new Request(testURL, myInit);
-  fetch(myRequest)
-    .then(result=> {
-        console.log(result);
-    });
+           });
+  instance.post('rest-auth/login/ ', {
+    username: payload.email,
+    password: payload.password,
+  })
+  .then(function (response) {
+    //dohvacanje tokena i spremanje u session
+    console.log(JSON.stringify(response) + "TOKEN");
+    window.sessionStorage.setItem("key", response.data.key);
+    console.log(window.sessionStorage.getItem("key"));
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+
 }
 
 
