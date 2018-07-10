@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, AppRegistry, KeyboardAvoidingView, StyleSheet,
+import { View, AppRegistry, KeyboardAvoidingView, StyleSheet, AsyncStorage,
           Dimensions, ScrollView,BackHandler, Keyboard, Platform } from 'react-native';
 import {FormInput, CheckBox, SocialIcon, Text,} from 'react-native-elements';
 
@@ -11,6 +11,7 @@ export default class NewWalletScreen extends Component {
       header: null
   };
 
+  static token;
 
   constructor(props){
     super(props);
@@ -18,13 +19,19 @@ export default class NewWalletScreen extends Component {
       euro : true,
       dollar : false,
       kuna : false,
-      nameError : false,
-      balanceError : false,
       name : "",
       balance : 0,
+      nameBorderColor : "green",
+      balanceBorderColor : "green"
     };
-
+    this._bootstrapAsync();
   }
+  _bootstrapAsync = async () => {
+    //za slučaj da se krivo ulogiras koristi ovo
+    // AsyncStorage.removeItem("userToken");
+    const userToken = await AsyncStorage.getItem('userToken');
+    token = userToken;
+  };
 
   componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
@@ -58,32 +65,41 @@ export default class NewWalletScreen extends Component {
 
     if(name == "" || name.lenght < 5 || name.lenght > 50){
       nameError = true;
+      this.setState({nameBorderColor:"red"});
       this.nameRef.shake();
     } else {
       nameError = false;
+      this.setState({nameBorderColor:"green"});
+
     }
 
     if(balance == ""){
       balanceError = true;
+      this.setState({balanceBorderColor:"red"});
       this.balanceRef.shake();
     } else {
       balanceError = false;
+      this.setState({balanceBorderColor:"green"});
     }
 
-    if(nameError === false){
+    if(nameError === false && balanceError === false){
       fetch('http://46.101.226.120:8000/api/wallets/create/', {
             method: 'POST',
             headers: {
                'Content-Type': 'application/json',
-               'Authorization': 'Token ' + 'baa1edeebd7c1e2e6be67790a943bd2c88e6bf0f'
+               'Authorization': 'Token ' + token
             },
             body: JSON.stringify({
-              balance: 300.00,
-              currency : "HRK",
-              name : "Moj prvi novčanik"
+              balance: balance,
+              currency : currency,
+              name : name
             }),
           }).then((response) => {
-              console.log(response);
+              if(response.status == 201){
+                  this.props.navigation.navigate("App");
+              } else {
+                console.log(res);
+              }
             })
             .catch((error) => {
               console.error(error);
@@ -97,13 +113,14 @@ export default class NewWalletScreen extends Component {
       <ScrollView>
           <KeyboardAvoidingView enabled behavior = "padding" style = {styles.container} enabled>
 
-            <FormInput placeholder = "Insert new wallet name" containerStyle = {styles.input}  inputStyle = {{width : width - 100}}
+            <FormInput placeholder = "Insert new wallet name" containerStyle = {[styles.input, {borderColor : this.state.nameBorderColor}]}  inputStyle = {{width : width - 100}}
                 underlineColorAndroid="transparent"  selectionColor = "orangered" blurOnSubmit={false} onChangeText = {(name) => this.setState({name : name})}
                   returnKeyType = "next" ref={nameRef => this.nameRef = nameRef} onSubmitEditing = { () => this.balanceRef.focus()} />
 
-                <FormInput placeholder = "Insert current account balance" containerStyle = {styles.input}  inputStyle = {{width : width - 100}}
-                    underlineColorAndroid="transparent" keyboardType = "numeric"  selectionColor = "orangered" blurOnSubmit={false}  onSubmitEditing = {() => Keyboard.dismiss()}
-                      onChangeText = {(balance) => this.setState({balance : balance})}  returnKeyType = "done" ref={balanceRef => this.balanceRef = balanceRef} />
+                <FormInput placeholder = "Insert current account balance" containerStyle = {[styles.input, {borderColor : this.state.balanceBorderColor}]}
+                  inputStyle = {{width : width - 100}} underlineColorAndroid="transparent" keyboardType = "numeric"  selectionColor = "orangered"
+                    blurOnSubmit={false}  onSubmitEditing = {() => Keyboard.dismiss()} onChangeText = {(balance) => this.setState({balance : balance})}
+                      returnKeyType = "done" ref={balanceRef => this.balanceRef = balanceRef} />
 
                   <View style = {styles.currencySelectorContainer}>
                     <CheckBox title = "EUR"  center iconRight = {false} checkedIcon="euro"  uncheckedIcon='euro'
@@ -146,7 +163,6 @@ const styles = StyleSheet.create({
         width : width - 50,
         borderRadius : 50,
         backgroundColor : "ghostwhite",
-        borderColor : "green",
         borderWidth : 2,
       },
       currencySelectorContainer : {
