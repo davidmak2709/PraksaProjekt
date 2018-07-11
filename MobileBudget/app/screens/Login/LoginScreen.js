@@ -77,9 +77,6 @@ export default class LoginScreen extends Component {
             .catch((error) => {
               console.error(error);
             });
-
-
-
       }
     }
 

@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from 'react-navigation';
 
 import HomeTab from "../../fragments/HomeTab";
 import SettingsTab from "../../fragments/SettingsTab";
-import DetailsTab from "../../fragments/DetailsTab";
+import UserTab from "../../fragments/UserTab";
 
 import { YellowBox } from 'react-native';
 YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
@@ -15,8 +15,9 @@ const {height, width} = Dimensions.get('window');
 export default createBottomTabNavigator(
   {
     Home: HomeTab,
-    Settings: SettingsTab,
-    Details: DetailsTab
+    Status: SettingsTab,
+    Wallets: UserTab,
+    User: UserTab,
   },
   {
     navigationOptions: ({ navigation }) => ({
@@ -25,10 +26,12 @@ export default createBottomTabNavigator(
         let iconName;
         if (routeName === 'Home') {
           iconName = `ios-home${focused ? '' : '-outline'}`;
-        } else if (routeName === 'Settings') {
-          iconName = `ios-options${focused ? '' : '-outline'}`;
-        } else if (routeName === 'Details') {
-          iconName = `ios-podium${focused ? '' : '-outline'}`;
+        } else if (routeName === 'Status') {
+          iconName = `ios-barcode${focused ? '' : '-outline'}`;
+        } else if (routeName === 'User') {
+          iconName = `ios-person${focused ? '' : '-outline'}`;
+        } else if (routeName === 'Wallets') {
+          iconName = `ios-briefcase`;
         }
 
         return <Ionicons name={iconName} size={35} color={tintColor} />;

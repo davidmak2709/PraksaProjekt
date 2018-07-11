@@ -1,13 +1,43 @@
 import React from 'react';
-import { Text, View, Dimensions } from 'react-native';
-
+import {  View, ScrollView } from 'react-native';
+import {Text} from 'react-native-elements';
 export default class SettingsTab extends React.Component {
 
   render() {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Settings!</Text>
-      </View>
+      <ScrollView >
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+        <Text h1>Settings!</Text>
+
+      </ScrollView>
     );
   }
 }

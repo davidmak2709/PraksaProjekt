@@ -4,6 +4,7 @@ import { View, AppRegistry, KeyboardAvoidingView, StyleSheet, AsyncStorage,
 import {FormInput, CheckBox, SocialIcon, Text,} from 'react-native-elements';
 
 // "baa1edeebd7c1e2e6be67790a943bd2c88e6bf0f"
+//TODO napraviti error handling za wallet
 
 const {height, width} = Dimensions.get('window');
 export default class NewWalletScreen extends Component {
@@ -33,7 +34,7 @@ export default class NewWalletScreen extends Component {
     token = userToken;
   };
 
-  componentDidMount() {
+    componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     }
 

@@ -13,7 +13,7 @@ const AppStack = createStackNavigator({Home: {screen : HomeScreen,
                   })
                 }
               });
-              
+
 const AuthStack = createStackNavigator({  Login: LoginScreen,Signup : SignupScreen , NewWallet : NewWalletScreen,  });
 
 export default createSwitchNavigator(
@@ -30,5 +30,6 @@ export default createSwitchNavigator(
 class App extends React.Component {
 
   render() {
+    <StatusBar hidden={true} />
   }
 }
