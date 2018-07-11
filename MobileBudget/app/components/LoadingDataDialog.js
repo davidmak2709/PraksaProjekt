@@ -17,4 +17,4 @@ export default class LoadingDataDialog extends Component {
   }
 }
 
-AppRegistry.registerComponent('ErrorDialog', () => ErrorDialog);
+AppRegistry.registerComponent('LoadingDataDialog', () => LoadingDataDialog);

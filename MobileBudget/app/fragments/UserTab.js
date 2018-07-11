@@ -1,10 +1,10 @@
 import React from 'react';
 import { Text, ScrollView, Dimensions,AsyncStorage, View} from 'react-native';
 import LoadingDataDialog from "../components/LoadingDataDialog";
+import PasswordChangeDialog from "../components/PasswordChangeDialog";
 import {FormLabel, FormInput, Button} from 'react-native-elements';
 
 //TODO validacija za nove podatke
-//TODO modal za password
 
 const {height, width} = Dimensions.get('window');
 export default class UserTab extends React.Component {
@@ -108,13 +108,15 @@ export default class UserTab extends React.Component {
                 value = {this.state.lastname}/>
 
 
-          <Button title = "Change your password" backgroundColor = "green" buttonStyle = {{marginTop : 25}} icon = {{ name : "save" , size : 20 }} />
-          <Button  title = "Save changes" backgroundColor = "darkblue" buttonStyle = {{marginTop : 25}} icon = {{ name : "https" , size : 20 }}
+          <Button title = "Change your password" backgroundColor = "green" buttonStyle = {{marginTop : 25}} icon = {{ name : "save" , size : 20 }}
+            onPress = {() => this.setState({passwordModalVisible : true})}/>
+          <Button disabled = {true} title = "Save changes" backgroundColor = "darkblue" buttonStyle = {{marginTop : 25}} icon = {{ name : "https" , size : 20 }}
               onPress = {this.saveUserData.bind(this)}/>
-          <Button title = "Logout" backgroundColor = "red" buttonStyle = {{marginTop : 25}} icon = {{ name : "exit-to-app" , size : 20 }}
+          <Button title = "Logout" backgroundColor = "red" buttonStyle = {{marginTop : 25, marginBottom : 25}} icon = {{ name : "exit-to-app" , size : 20 }}
               onPress = {this.logoutUser.bind(this)}/>
 
         </ScrollView>
+        <PasswordChangeDialog  visible = {this.state.passwordModalVisible}/>
       </View>
     );
   }
