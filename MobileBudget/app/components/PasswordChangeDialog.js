@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { View, AppRegistry, StyleSheet, Dimensions, TouchableHighlight, Modal } from 'react-native';
+import { View, AppRegistry, StyleSheet, Dimensions, TouchableHighlight, Modal,
+          AsyncStorage, Alert } from 'react-native';
 import { Text, Icon, FormInput,FormLabel, Divider} from 'react-native-elements';
 
 const {height, width} = Dimensions.get('window');
-//TODO validacija + slanje
-//TODO onTouch backgroundColor za SAVE button
+//TODO napraviti da se zahtjeva stara lozinka i provjeriti
 export default class PasswordChangeDialog extends Component {
 
   constructor(props) {
@@ -31,8 +31,39 @@ export default class PasswordChangeDialog extends Component {
         this.setState({modalVisible : visible});
      }
 
-   saveNewPassword(){
-     console.log("Saljemo novi password");
+   saveNewPassword= async () => {
+     const userToken = await AsyncStorage.getItem('userToken');
+     token = userToken;
+
+     if(this.state.password1 != "" && this.state.password2 != "" && this.state.oldPassword != ""){
+       fetch('http://46.101.226.120:8000/api/rest-auth/password/change/', {
+            method: 'POST',
+            headers: {
+               'Content-Type': 'application/json',
+               'Authorization': 'Token ' + token,
+               "OLD_PASSWORD_FIELD_ENABLED" : true
+            },
+            body: JSON.stringify({
+              new_password1 : this.state.password1,
+              new_password2 : this.state.password2,
+              old_password : this.state.oldPassword,
+            }),
+          }).then((response) =>  response.json())
+            .then((responseJson) => {
+              let resultMessage = "";
+
+              if(responseJson.new_password2)
+                resultMessage = resultMessage.concat(responseJson.new_password2.join("\n"));
+
+              if(responseJson.detail)
+                resultMessage = resultMessage.concat(responseJson.detail);
+
+              Alert.alert("Result", resultMessage)
+              console.log(responseJson);
+            }).catch((error) => {
+              console.error(error);
+            });
+     }
    }
 
   render(){
@@ -83,6 +114,7 @@ export default class PasswordChangeDialog extends Component {
                 <View style = {styles.footer}>
 
                   <TouchableHighlight
+                    underlayColor="ghostwhite"
                     onPress={() => {
                       this.setErrorDialogVisible(false)
                     }}>
@@ -92,7 +124,8 @@ export default class PasswordChangeDialog extends Component {
                   <Divider style = {{ width  : 20, backgroundColor : "white"}}  />
 
                   <TouchableHighlight
-                    onPress={this.saveNewPassword.bind(this)}>
+                    underlayColor="ghostwhite"
+                    onPress={this.saveNewPassword}>
                     <Text  style = {{color:"green", fontSize : 22 }}>SAVE</Text>
                   </TouchableHighlight>
 
