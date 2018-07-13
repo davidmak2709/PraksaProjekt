@@ -38,6 +38,7 @@ constructor(props){
                console.log(error);
 
            });
+
   instance.post('rest-auth/login/ ', {
     username: payload.email,
     password: payload.password,
@@ -47,6 +48,7 @@ constructor(props){
     console.log(JSON.stringify(response) + "TOKEN");
     window.sessionStorage.setItem("key", response.data.key);
     console.log(window.sessionStorage.getItem("key"));
+    window.sessionStorage.setItem("username", payload.email);
   })
   .catch(function (error) {
     console.log(error);
