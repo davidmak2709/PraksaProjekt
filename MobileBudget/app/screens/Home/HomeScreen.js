@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from 'react-navigation';
 import HomeTab from "../../fragments/HomeTab";
 import SettingsTab from "../../fragments/SettingsTab";
 import UserTab from "../../fragments/UserTab";
+import WalletTab from "../../fragments/WalletsTab";
 
 import { YellowBox } from 'react-native';
 YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
@@ -16,7 +17,7 @@ export default createBottomTabNavigator(
   {
     Home: HomeTab,
     Status: SettingsTab,
-    Wallets: UserTab,
+    Wallets: WalletTab,
     User: UserTab,
   },
   {
