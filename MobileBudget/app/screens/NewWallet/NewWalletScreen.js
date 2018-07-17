@@ -7,7 +7,7 @@ import {FormInput, CheckBox, SocialIcon, Text,} from 'react-native-elements';
 //TODO napraviti error handling za wallet
 
 const {height, width} = Dimensions.get('window');
-export default class NewWalletScreen extends Component {
+export default class NewWalletDialog extends Component {
   static navigationOptions = {
       header: null
   };
