@@ -79,7 +79,8 @@ export default class WalletTab extends React.Component {
           <TouchableOpacity activeOpacity={0.5} onPress = { () => this.setState({walletModal : true})} style={styles.TouchableOpacityStyle} >
             <Icon color =  "white" name=  "add" size = {30}/>
           </TouchableOpacity>
-          <NewWalletDialog visible = {this.state.walletModal}  />
+
+          <NewWalletDialog visible = {this.state.walletModal}/>
         </View>
       );
     }
