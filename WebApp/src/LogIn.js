@@ -4,15 +4,19 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+import { Route, Redirect } from 'react-router'
 
 class Login extends Component {
+
 constructor(props){
   super(props);
   this.state={
   username:'',
-  password:''
+  password:'',
+  error:false
   }
  }
+
 
  handleClick(event){
    var apiBaseUrl = "http://46.101.226.120:8000/api/";
@@ -29,16 +33,6 @@ constructor(props){
 
        });
 
-  instance.get('/users/')
-           .then(function (response) {
-               console.log(response);
-               window.alert(response.data['0'].email);
-           })
-           .catch(function (error) {
-               console.log(error);
-
-           });
-
   instance.post('rest-auth/login/ ', {
     username: payload.email,
     password: payload.password,
@@ -49,17 +43,27 @@ constructor(props){
     window.sessionStorage.setItem("key", response.data.key);
     console.log(window.sessionStorage.getItem("key"));
     window.sessionStorage.setItem("username", payload.email);
+
   })
   .catch(function (error) {
-    console.log(error);
+    console.log(error + "ERRRRRRor");
+    //window.alert("Login failed: wrong username or password"); RADII malo uljepsati error msg
+    self.setState({error:true});
   });
+
 
 }
 
 
-
-
 render() {
+
+    let err_msg;
+    if(this.state.error){
+      err_msg = <p>error</p>
+    }else{
+      err_msg = <p>sucess</p>
+    }
+    //// TODO: dovršit error msg zasto se ne pojavljuje prvi slucaj
     return (
       <div>
         <MuiThemeProvider>
@@ -80,10 +84,12 @@ render() {
                onChange = {(event,newValue) => this.setState({password:newValue})}
                />
              <br/>
+             <span>{err_msg}</span>
              <RaisedButton label="Submit" primary={true} style={style} onClick={(event) => this.handleClick(event)}/>
          </div>
          </MuiThemeProvider>
       </div>
+
 
     );
   }
