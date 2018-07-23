@@ -14,6 +14,9 @@ constructor(props){
   name:'',
   currency:'',
   balance:'',
+  addform:false,
+  wallets:[],
+  length:0,
   };
 this.handleChange = this.handleChange.bind(this);
 this.handleSubmit = this.handleSubmit.bind(this);
@@ -30,11 +33,11 @@ this.handleSubmit = this.handleSubmit.bind(this);
     console.log(this.state.token);
     instance.get('/wallets/ ')
      .then(function (response) {
-        //dohvacanje tokena i spremanje u session
-        console.log(response);
-        self.setState({balance:response.data['0'].balance.toString()});
+       //dohvacanje svih walleta
+        console.log(response + " " + response.data.length);
+        self.setState({length:response.data.length});
+        self.setState({wallets:response.data});
         //console.log(this.state.balance + "aaaa");
-        console.log(response.data['0'].balance);
       })
       .catch(function (error) {
         console.log(error);
@@ -71,32 +74,65 @@ handleChange = event => {
     [event.target.id]: event.target.value
   });
 }
+renderaddform(){
+    if(this.state.addform){
+      return   (
+        <form onSubmit={this.handleSubmit}>
+          <label>
+            Add new wallet:
+          </label>
+          <label>
+            Name:
+            <input type="text" id="name" value={this.state.name} onChange={this.handleChange} />
+          </label>
+          <label>
+            Value:
+            <input type="text" id="value" value={this.state.value} onChange={this.handleChange} />
+          </label>
+          <label>
+            Currency:
+            <input type="text" id="currency" value={this.state.currency} onChange={this.handleChange} />
+          </label>
+          <input type="submit" value="Submit" />
+        </form>);
+    }
+    else return ;
+
+}
+renderwallet(){
+    //var self =  this;
+    var wallets = [];
+    for(var i = 0 ; i < this.state.length ; i++){
+      if(this.state.wallets[this.state.length-1]){
+      var str = JSON.stringify(this.state.wallets[0]);
+      console.log(str);
+      var obj = this.state.wallets[i];
+      console.log(obj);
+      wallets.push(
+        <div className="wallet" key={i}>
+          <label>Wallet:</label>
+          {obj.name}
+          <label>balnace:</label>
+          {obj.balance} {obj.currency}
+
+        </div>
+      )
+    }
+  }
+    return wallets;
+
+}
 render() {
 
     return (
       <div>
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          Add new wallet:
-        </label>
-        <label>
-          Name:
-          <input type="text" id="name" value={this.state.name} onChange={this.handleChange} />
-        </label>
-        <label>
-          Value:
-          <input type="text" id="value" value={this.state.value} onChange={this.handleChange} />
-        </label>
-        <label>
-          Currency:
-          <input type="text" id="currency" value={this.state.currency} onChange={this.handleChange} />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
+      {this.renderwallet()}
+
+      {this.renderaddform()}
       <hr />
-      <label>balance:
-      {this.state.balance}
-      </label>
+
+      <button type="button" onClick={()=>{this.setState({addform:true})}}>Add new wallet!</button>
+
       </div>
     );
   }

@@ -6,6 +6,7 @@ import Signup from './Signup'
 import Profile from './Profile'
 import Wallet from './Wallet'
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import axios from 'axios';
 
 class Navbar extends Component{
   constructor(props){
@@ -15,20 +16,46 @@ class Navbar extends Component{
     }
    }
 
-  render(){
-    let logindiv;
+   logout(){
+     var self = this;
+     var apiBaseUrl = "http://46.101.226.120:8000/api/";
+
+     var instance = axios.create({
+              baseURL: apiBaseUrl,
+              timeout: 2000,
+          });
+
+     instance.post('rest-auth/logout/ ')
+     .then(function (response) {
+       //dohvacanje tokena i spremanje u session
+       console.log(JSON.stringify(response) + "LOGOUT");
+       sessionStorage.clear();
+       window.location.reload();
+       //// TODO: mozda postoji bolji nacin, sporo reload cijele stranice
+
+     })
+     .catch(function (error) {
+       console.log(error + "ERRRRRRor");
+     });
+   }
+
+  renderlogindiv(){
+
     if(this.state.hello){
-      logindiv = <ul className="nav navbar-nav navbar-right">
+      return( <ul className="nav navbar-nav navbar-right">
           			      <li><a href="/profile">Wellcome {window.sessionStorage.getItem("username")}</a></li>
-          			      <li><Link to="/login"><span onClick={() => { sessionStorage.clear(); }}className="glyphicon glyphicon-log-out"> Logout</span> </Link></li>
-          			 </ul>
+          			      <li><Link to="/login"><span onClick={this.logout} className="glyphicon glyphicon-log-out"> Logout</span> </Link></li>
+          			 </ul>);
     }else {
-      logindiv = <ul className="nav navbar-nav navbar-right">
+      return( <ul className="nav navbar-nav navbar-right">
           			      <li><a href="/signup"><span className="glyphicon glyphicon-user"></span> Sign Up</a></li>
           			      <li><Link to="/login"><span className="glyphicon glyphicon-log-in"> Login</span> </Link></li>
-          			 </ul>
+          			 </ul>);
 
     }
+  }
+
+  render(){
 
     return (
       <Router>
@@ -50,7 +77,7 @@ class Navbar extends Component{
                 <li><Link to="/wallet"><span> Wallet</span> </Link></li>
     			      <li><Link to="/statistics"><span> Statistics</span> </Link></li>
     			    </ul>
-    			    {logindiv}
+    			    {this.renderlogindiv()}
     			  </div>
     			</nav>
           <hr />

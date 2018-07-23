@@ -13,8 +13,9 @@ constructor(props){
   this.state={
   username:'',
   password:'',
-  error:false
-  }
+  error:false,
+  redirect:false,
+}
  }
 
 
@@ -29,8 +30,6 @@ constructor(props){
   var instance = axios.create({
            baseURL: apiBaseUrl,
            timeout: 2000,
-
-
        });
 
   instance.post('rest-auth/login/ ', {
@@ -43,6 +42,7 @@ constructor(props){
     window.sessionStorage.setItem("key", response.data.key);
     console.log(window.sessionStorage.getItem("key"));
     window.sessionStorage.setItem("username", payload.email);
+    self.setState({redirect:true});
 
   })
   .catch(function (error) {
@@ -51,9 +51,7 @@ constructor(props){
     self.setState({error:true});
   });
 
-
 }
-
 
 render() {
 
@@ -61,9 +59,13 @@ render() {
     if(this.state.error){
       err_msg = <p>error</p>
     }else{
-      err_msg = <p>sucess</p>
+      err_msg = <p></p>
     }
-    //// TODO: dovršit error msg zasto se ne pojavljuje prvi slucaj
+    if (this.state.redirect) {
+        {window.location.reload();}
+        return <Redirect push to="/" />;
+
+      }
     return (
       <div>
         <MuiThemeProvider>

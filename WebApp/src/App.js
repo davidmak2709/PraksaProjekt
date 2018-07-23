@@ -11,7 +11,7 @@ class App extends Component {
           <div className="App-slider">
             <img src={logo} className="App-logo" alt="logo" />
           </div>
-          <h1 className="App-title">Welcome to React</h1>
+          <h1 className="App-title">Welcome to MyFinances</h1>
 
         </header>
         <Navbar />
