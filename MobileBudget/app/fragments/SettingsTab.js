@@ -7,18 +7,7 @@ export default class SettingsTab extends React.Component {
     return (
       <View style = {{flex : 1}}>
         <ScrollView>
-        <Text h1 >AAAAA</Text>
-        <Text h1 >AAAAA</Text>
-        <Text h1 >AAAAA</Text>
-        <Text h1 >AAAAA</Text>
-        <Text h1 >AAAAA</Text>
-        <Text h1 >AAAAA</Text>
-        <Text h1 >AAAAA</Text>
-        <Text h1 >AAAAA</Text>
-        <Text h1 >AAAAA</Text>
-        <Text h1 >AAAAA</Text>
-        <Text h1 >AAAAA</Text>
-        <Text h1 >AAAAA</Text>
+          <Button title = "DODAJ" onPress = {() => this.props.navigation.navigate("Transaction")} />
         </ScrollView>
       </View>
     );

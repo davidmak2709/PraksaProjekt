@@ -125,6 +125,7 @@ export default class SignupScreen extends Component {
 	render() {
 		return (
 			<View style={{ flex: 1, backgroundColor: "ghostwhite" }}>
+				
 				<ScrollView>
 					<KeyboardAvoidingView
 						style={styles.container}
