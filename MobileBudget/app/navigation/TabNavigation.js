@@ -3,20 +3,14 @@ import { Dimensions } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { createBottomTabNavigator } from "react-navigation";
 
-import HomeTab from "../../fragments/HomeTab";
-import SettingsTab from "../../fragments/SettingsTab";
-import UserTab from "../../fragments/UserTab";
-import WalletTab from "../../fragments/WalletsTab";
-
-import { YellowBox } from "react-native";
-YellowBox.ignoreWarnings([
-	"Warning: isMounted(...) is deprecated",
-	"Module RCTImageLoader"
-]);
+import HomeTab from "../fragments/HomeTab";
+import SettingsTab from "../fragments/SettingsTab";
+import UserTab from "../fragments/UserTab";
+import WalletTab from "../fragments/WalletsTab";
 
 const { height, width } = Dimensions.get("window");
 
-export default createBottomTabNavigator(
+const navTab = createBottomTabNavigator(
 	{
 		Home: HomeTab,
 		Status: SettingsTab,
@@ -54,3 +48,5 @@ export default createBottomTabNavigator(
 		}
 	}
 );
+
+export default navTab;

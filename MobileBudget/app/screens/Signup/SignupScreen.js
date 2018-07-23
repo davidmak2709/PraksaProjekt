@@ -98,7 +98,7 @@ export default class SignupScreen extends Component {
 					if (responseJson.key) {
 						this.setState({ errorMessage: "" });
 						AsyncStorage.setItem("userToken", responseJson.key);
-						this.props.navigation.replace("NewWallet");
+						this.props.navigation.navigate("Home");
 					} else {
 						let errorMsg = "";
 

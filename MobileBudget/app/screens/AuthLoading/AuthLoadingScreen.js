@@ -3,9 +3,9 @@ import {
 	ActivityIndicator,
 	AsyncStorage,
 	AppRegistry,
-	StatusBar,
 	StyleSheet,
-	View
+	View,
+	Text
 } from "react-native";
 
 export default class AuthLoadingScreen extends React.Component {
@@ -25,8 +25,10 @@ export default class AuthLoadingScreen extends React.Component {
 	render() {
 		return (
 			<View style={styles.container}>
-				<ActivityIndicator />
-				<StatusBar barStyle="default" />
+				<Text style={{ fontSize: 32, margin: 5, color: "green" }}>
+					Mobile Budget
+				</Text>
+				<ActivityIndicator size="large" />
 			</View>
 		);
 	}
