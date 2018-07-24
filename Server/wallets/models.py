@@ -1,11 +1,68 @@
 from django.db import models
+from datetime import date
 from users import models as users_models
+
+EURO = 'EUR'
+BRITISH_POUND = 'GBP'
+CROATIAN_KUNA = 'HRK'
+UNITED_STATES_DOLLAR = 'USD'
+SWISS_FRANC = 'CHF'
+CURRENCY_CHOICES = (
+	(EURO, 'Euro'),
+	(BRITISH_POUND, 'British pound'),
+	(CROATIAN_KUNA, 'Croatian kuna'),
+	(UNITED_STATES_DOLLAR, 'United States dollar'),
+	(SWISS_FRANC, 'Swiss franc'),
+)
 
 class Wallet(models.Model):
 	user = models.ForeignKey(users_models.CustomUser, on_delete=models.CASCADE)
 	balance = models.FloatField()
-	currency = models.CharField(max_length=5)
+	currency = models.CharField(max_length=5, choices=CURRENCY_CHOICES)
 	name = models.CharField(max_length=50, null=True)
 
 	def __str__(self):
-		return self.balance
+		return 'Wallet: {} {} {} {}'.format(self.user, self.balance, self.currency, self.name)
+
+class Transaction(models.Model):
+	PAYCHECK = 'paycheck'
+	GASOLINE = 'gasoline'
+	CHARITY = 'charity'
+	CLOTHING = 'clothing'
+	GROCERIES = 'groceries'
+	GIFTS = 'gifts'
+	HEALTHCARE = 'healthcare'
+	HOUSEHOLD = 'household'
+	INSURANCE = 'insurance'
+	LEISURE_HOBBIES = 'leisure_hobbies'
+	UTILITIES = 'utilities'
+	VACATION = 'vacation'
+	TRANSACTION_CHOICES = (
+		(PAYCHECK, 'Paycheck'),
+		(GASOLINE, 'Car gas'),
+		(CHARITY, 'Charity (e.g. donations)'),
+		(CLOTHING, 'Clothes'),
+		(GROCERIES, 'Groceries'),
+		(GIFTS, 'Gifts'),
+		(HEALTHCARE, 'Healthcare'),
+		(HOUSEHOLD, 'Household (e.g. rennovations)'),
+		(INSURANCE, 'Insurance costs'),
+		(LEISURE_HOBBIES, 'Leisure and hobbies'),
+		(UTILITIES, 'Utilities (e.g. electricity bills)'),
+		(VACATION, 'Vacation'),
+	)
+	wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
+	name = models.CharField(max_length=50)
+	date = models.DateField(default=date.today)
+	amount = models.FloatField()
+	currency = models.CharField(max_length=5, choices=CURRENCY_CHOICES)
+	category = models.CharField(max_length=20, choices=TRANSACTION_CHOICES)
+
+	def __str__(self):
+		return 'Transaction: {} {} {} {}'.format(self.wallet, self.category, self.amount, self.currency)
+
+	def save(self, *args, **kwargs):
+		# TODO: currency converter
+		wallet = Wallet.objects.filter(pk=self.wallet.pk)
+		wallet.update(balance=models.F('balance')+self.amount)
+		models.Model.save(self, *args, **kwargs)

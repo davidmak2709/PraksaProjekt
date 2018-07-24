@@ -5,7 +5,7 @@ from . import serializers
 
 class CreateWalletView(generics.CreateAPIView):
 	serializer_class = serializers.WalletSerializer
-	permission_classes = (permissions.IsAuthenticated,)
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 	def perform_create(self, serializer):
 		current_user = self.request.user
@@ -13,7 +13,7 @@ class CreateWalletView(generics.CreateAPIView):
 
 class WalletListView(generics.ListAPIView):
 	serializer_class = serializers.WalletSerializer
-	permission_classes = (permissions.IsAuthenticated,)
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 	def get_queryset(self):
 		current_user = self.request.user
@@ -28,3 +28,7 @@ class WalletUpdateView(generics.RetrieveUpdateDestroyAPIView):
 		selected_wallet = self.kwargs['pk']
 		obj = get_object_or_404(models.Wallet, pk=selected_wallet, user=current_user.pk)
 		return obj
+
+class CreateTransactionView(generics.CreateAPIView):
+	serializer_class = serializers.TransactionSerializer
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
