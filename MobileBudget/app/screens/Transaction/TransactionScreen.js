@@ -20,8 +20,9 @@ import {
 } from "react-native-elements";
 import { height, width } from "../../constants/";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { connect } from "react-redux";
 
-export default class TransactionScreen extends React.Component {
+class TransactionScreen extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -37,6 +38,13 @@ export default class TransactionScreen extends React.Component {
 	}
 
 	render() {
+		let walletsArray = [];
+		for (var i = 0; i < 4; i++) {
+			walletsArray.push(
+				<Picker.Item label={this.props.wallets[i].name} value={this.props.wallets[i].pk} key = {i} />
+			);
+		}
+
 		let dataFields = null;
 		if (this.state.dataFieldsVisible) {
 			dataFields = (
@@ -241,8 +249,7 @@ export default class TransactionScreen extends React.Component {
 								this.setState({ language: itemValue })
 							}
 						>
-							<Picker.Item label="Java" value="java" />
-							<Picker.Item label="JavaScript" value="js" />
+							{walletsArray}
 						</Picker>
 					</View>
 					{/*picker za odabir kategoriju*/}
@@ -324,3 +331,10 @@ const styles = StyleSheet.create({
 		borderBottomWidth: 1
 	}
 });
+
+function mapStateToProps(state) {
+	return {
+		wallets: state.wallets
+	};
+}
+export default connect(	mapStateToProps,	null)(TransactionScreen);

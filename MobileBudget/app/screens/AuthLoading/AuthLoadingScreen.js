@@ -7,19 +7,42 @@ import {
 	View,
 	Text
 } from "react-native";
+import { connect } from "react-redux";
+import { setWallets } from "../../redux/actions";
 
-export default class AuthLoadingScreen extends React.Component {
+class AuthLoadingScreen extends React.Component {
+	static userToken;
 	constructor(props) {
 		super(props);
 		this._bootstrapAsync();
 	}
 
 	_bootstrapAsync = async () => {
-		//za slučaj da se krivo ulogiras koristi ovo
-		// AsyncStorage.removeItem("userToken");
-		const userToken = await AsyncStorage.getItem("userToken");
+		userToken = await AsyncStorage.getItem("userToken");
 
-		this.props.navigation.navigate(userToken ? "App" : "Auth");
+		if (userToken) {
+			this._getUserWallets();
+			this.props.navigation.navigate("App");
+		} else {
+			this.props.navigation.navigate("Auth");
+		}
+	};
+
+	_getUserWallets = () => {
+		fetch("http://46.101.226.120:8000/api/wallets/", {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: "Token " + userToken
+			}
+		})
+			.then(response => response.json())
+			.then(responseJson => {
+				this.props.setWallets(responseJson);
+			})
+			.catch(error => {
+				console.error(error);
+			});
 	};
 
 	render() {
@@ -41,3 +64,10 @@ const styles = StyleSheet.create({
 		justifyContent: "center"
 	}
 });
+
+function mapStateToProps(state) {
+	return {
+		wallets: state.wallets
+	};
+}
+export default connect(	mapStateToProps,	{ setWallets })(AuthLoadingScreen);

@@ -13,46 +13,20 @@ import {
 	FlatList
 } from "react-native";
 import { Icon } from "react-native-elements";
+import { connect } from "react-redux";
+import { setWallets } from "../redux/actions";
+
 import Wallet from "../components/Wallet";
 import NewWalletDialog from "../components/NewWalletDialog";
+import { height, width } from "../constants";
 
-const { height, width } = Dimensions.get("window");
-
-export default class WalletTab extends React.Component {
+class WalletTab extends React.Component {
 	constructor() {
 		super();
-		this._getUserWallets();
 		this.state = {
-			response: [],
-			loading: true,
-			walletModal: false,
-			refreshing: false
+			walletModal: false
 		};
 	}
-
-	_getUserWallets = async () => {
-		const userToken = await AsyncStorage.getItem("userToken");
-		token = userToken;
-		this.setState({ refreshing: true });
-		fetch("http://46.101.226.120:8000/api/wallets/", {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: "Token " + token
-			}
-		})
-			.then(response => response.json())
-			.then(responseJson => {
-				this.setState({
-					response: responseJson,
-					loading: false,
-					refreshing: false
-				});
-			})
-			.catch(error => {
-				console.error(error);
-			});
-	};
 
 	_keyExtractor = (item, index) => item.pk.toString();
 
@@ -61,7 +35,7 @@ export default class WalletTab extends React.Component {
 			<Wallet
 				name={item.name}
 				balance={item.balance}
-				token={token}
+				token="{token}"
 				currency={item.currency}
 				pk={item.pk}
 				user={item.user}
@@ -69,52 +43,31 @@ export default class WalletTab extends React.Component {
 		);
 	};
 
-	_onRefresh = () => {
-		this.setState({ refreshing: true, walletModal: false });
-		this._getUserWallets();
-	};
-
 	render() {
-		if (this.state.loading) {
-			return (
-				<View
-					style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+		
+		return (
+			<View style={{ flex: 1 }}>
+				<FlatList
+					keyExtractor={this._keyExtractor}
+					data={this.props.wallets}
+					extraData={this.props.wallets}
+					renderItem={this._renderItem}
+					contentContainerStyle={{
+						paddingBottom: height * 0.2,
+						alignItems: "center"
+					}}
+				/>
+				<TouchableOpacity
+					activeOpacity={0.5}
+					onPress={() => this.setState({ walletModal: true })}
+					style={styles.TouchableOpacityStyle}
 				>
-					<ActivityIndicator size="large" color="green" />
-				</View>
-			);
-		} else {
-			return (
-				<View style={{ flex: 1 }}>
-					<FlatList
-						keyExtractor={this._keyExtractor}
-						data={Object.values(this.state.response)}
-						extraData={Object.values(this.state.response)}
-						renderItem={this._renderItem}
-						refreshControl={
-							<RefreshControl
-								colors={["green", "lightgreen"]}
-								refreshing={this.state.refreshing}
-								onRefresh={this._onRefresh}
-							/>
-						}
-						contentContainerStyle={{
-							paddingBottom: height * 0.2,
-							alignItems: "center"
-						}}
-					/>
-					<TouchableOpacity
-						activeOpacity={0.5}
-						onPress={() => this.setState({ walletModal: true })}
-						style={styles.TouchableOpacityStyle}
-					>
-						<Icon color="white" name="add" size={30} />
-					</TouchableOpacity>
+					<Icon color="white" name="add" size={30} />
+				</TouchableOpacity>
 
-					<NewWalletDialog visible={this.state.walletModal} />
-				</View>
-			);
-		}
+				<NewWalletDialog visible={this.state.walletModal} />
+			</View>
+		);
 	}
 }
 
@@ -131,3 +84,10 @@ const styles = StyleSheet.create({
 		bottom: 30
 	}
 });
+
+function mapStateToProps(state) {
+	return {
+		wallets: state.wallets
+	};
+}
+export default connect(	mapStateToProps,	{ setWallets })(WalletTab);

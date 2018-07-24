@@ -17,10 +17,11 @@ import {
 	CheckBox,
 	Divider
 } from "react-native-elements";
+import { width, height } from "../constants";
+import { connect } from "react-redux";
+import { addWallet } from "../redux/actions";
 
-const { height, width } = Dimensions.get("window");
-
-export default class NewWalletDialog extends Component {
+class NewWalletDialog extends Component {
 	static token;
 
 	constructor(props) {
@@ -30,6 +31,8 @@ export default class NewWalletDialog extends Component {
 			euro: true,
 			dollar: false,
 			kuna: false,
+			pound: false,
+			franc: false,
 			name: "",
 			balance: 0,
 			nameBorderColor: "green",
@@ -69,6 +72,10 @@ export default class NewWalletDialog extends Component {
 			currency = "USD";
 		} else if (this.state.euro) {
 			currency = "EUR";
+		} else if (this.state.pound) {
+			currency = "GBP";
+		} else if (this.state.franc) {
+			currency = "CHF";
 		}
 
 		if (name == "" || name.lenght < 5 || name.lenght > 50) {
@@ -103,15 +110,21 @@ export default class NewWalletDialog extends Component {
 				})
 			})
 				.then(response => {
-					if (response.status == 201) {
+					const statusCode = response.status;
+					const data = response.json();
+					return Promise.all([statusCode, data]);
+				})
+				.then(([res, data]) => {
+					if (res == 201) {
+						this.props.addWallet(data);
 						this.setState({ modalVisible: false });
-						Alert.alert("New wallet created. Refresh! :)");
 					} else {
 						Alert.alert("Error");
 					}
 				})
 				.catch(error => {
 					console.error(error);
+					return { name: "network error", description: "" };
 				});
 		}
 	}
@@ -183,7 +196,13 @@ export default class NewWalletDialog extends Component {
 									checked={this.state.euro}
 									containerStyle={styles.currencyOptionContainer}
 									onPress={() =>
-										this.setState({ euro: true, dollar: false, kuna: false })
+										this.setState({
+											euro: true,
+											dollar: false,
+											kuna: false,
+											pound: false,
+											franc: false
+										})
 									}
 								/>
 
@@ -197,7 +216,13 @@ export default class NewWalletDialog extends Component {
 									uncheckedColor="red"
 									checked={this.state.dollar}
 									onPress={() =>
-										this.setState({ euro: false, dollar: true, kuna: false })
+										this.setState({
+											euro: false,
+											dollar: true,
+											kuna: false,
+											pound: false,
+											franc: false
+										})
 									}
 								/>
 
@@ -211,7 +236,55 @@ export default class NewWalletDialog extends Component {
 									uncheckedColor="red"
 									containerStyle={styles.currencyOptionContainer}
 									onPress={() =>
-										this.setState({ euro: false, dollar: false, kuna: true })
+										this.setState({
+											euro: false,
+											dollar: false,
+											kuna: true,
+											pound: false,
+											franc: false
+										})
+									}
+								/>
+							</View>
+							<View style={styles.currencySelectorContainer}>
+								<CheckBox
+									title="GBP"
+									center
+									iconRight={false}
+									checkedIcon="gbp"
+									uncheckedIcon="gbp"
+									checkedColor="green"
+									uncheckedColor="red"
+									checked={this.state.pound}
+									containerStyle={styles.currencyOptionContainer}
+									onPress={() =>
+										this.setState({
+											euro: false,
+											dollar: false,
+											kuna: false,
+											pound: true,
+											franc: false
+										})
+									}
+								/>
+
+								<CheckBox
+									title="CHF"
+									center
+									checkedIcon="money"
+									uncheckedIcon="money"
+									containerStyle={styles.currencyOptionContainer}
+									checkedColor="green"
+									uncheckedColor="red"
+									checked={this.state.franc}
+									onPress={() =>
+										this.setState({
+											euro: false,
+											dollar: false,
+											kuna: false,
+											pound: false,
+											franc: true
+										})
 									}
 								/>
 							</View>
@@ -291,5 +364,13 @@ const styles = StyleSheet.create({
 		backgroundColor: "transparent"
 	}
 });
+
+function mapStateToProps(state) {
+	return {
+		wallets: state.wallets
+	};
+}
+
+export default connect(	mapStateToProps,	{ addWallet })(NewWalletDialog);
 
 AppRegistry.registerComponent("NewWalletDialog", () => NewWalletDialog);

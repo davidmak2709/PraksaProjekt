@@ -7,18 +7,19 @@ import TransactionScreen from "../screens/Transaction/TransactionScreen";
 import navTab from "./TabNavigation";
 
 const AppStack = createStackNavigator({
-	Transaction : {
-		screen : TransactionScreen,
-		navigationOptions: ({ navigation }) => ({
-			title: `Add new transaction`,
-		})
-	},
 	Home: {
 		screen: navTab,
 		navigationOptions: ({ navigation }) => ({
 			header: null
 		})
 	},
+	Transaction : {
+		screen : TransactionScreen,
+		navigationOptions: ({ navigation }) => ({
+			title: `Add new transaction`,
+		})
+	},
+
 });
 
 const AuthStack = createStackNavigator({
