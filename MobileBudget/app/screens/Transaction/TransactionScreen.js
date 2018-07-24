@@ -26,12 +26,174 @@ export default class TransactionScreen extends React.Component {
 		super(props);
 		this.state = {
 			transactionType: true,
+			dataFieldsVisible: false,
+			euro: true,
+			kuna: false,
+			dollar: false,
+			pound: false,
+			franc: false,
 			language: "java"
 		};
 	}
 
 	render() {
-		
+		let dataFields = null;
+		if (this.state.dataFieldsVisible) {
+			dataFields = (
+				<View
+					style={{
+						width: width * 0.95,
+						flexDirection: "column",
+						justifyContent: "center"
+					}}
+				>
+					<FormInput
+						placeholder="Insert wallet name"
+						containerStyle={[styles.input, { borderBottomColor: "green" }]}
+						inputStyle={{ width: width * 0.8 * 0.95 }}
+						underlineColorAndroid="transparent"
+						blurOnSubmit={false}
+						returnKeyType="next"
+					/>
+
+					<FormInput
+						placeholder="Insert wallet name"
+						containerStyle={[styles.input, { borderBottomColor: "green" }]}
+						inputStyle={{ width: width * 0.8 * 0.95 }}
+						underlineColorAndroid="transparent"
+						blurOnSubmit={false}
+						returnKeyType="next"
+					/>
+					{/*odabir valute*/}
+					<View
+						style={{
+							width: width,
+							flexDirection: "row",
+							justifyContent: "center",
+							marginTop: 25
+						}}
+					>
+						<CheckBox
+							title="EUR"
+							center
+							iconRight={false}
+							checkedIcon="euro"
+							uncheckedIcon="euro"
+							checkedColor="green"
+							uncheckedColor="red"
+							checked={this.state.euro}
+							onPress={() =>
+								this.setState({
+									euro: true,
+									dollar: false,
+									kuna: false,
+									pound: false,
+									franc: false
+								})
+							}
+						/>
+
+						<CheckBox
+							title="USD"
+							center
+							checkedIcon="dollar"
+							uncheckedIcon="dollar"
+							checkedColor="green"
+							uncheckedColor="red"
+							checked={this.state.dollar}
+							onPress={() =>
+								this.setState({
+									euro: false,
+									dollar: true,
+									kuna: false,
+									pound: false,
+									franc: false
+								})
+							}
+						/>
+
+						<CheckBox
+							center
+							title="HRK"
+							checkedIcon="money"
+							uncheckedIcon="money"
+							checked={this.state.kuna}
+							checkedColor="green"
+							uncheckedColor="red"
+							onPress={() =>
+								this.setState({
+									euro: false,
+									dollar: false,
+									kuna: true,
+									pound: false,
+									franc: false
+								})
+							}
+						/>
+					</View>
+					<View
+						style={{
+							width: width,
+							flexDirection: "row",
+							justifyContent: "center"
+						}}
+					>
+						<CheckBox
+							title="CHF"
+							center
+							checkedIcon="money"
+							uncheckedIcon="money"
+							checkedColor="green"
+							uncheckedColor="red"
+							checked={this.state.franc}
+							onPress={() =>
+								this.setState({
+									euro: false,
+									dollar: false,
+									kuna: false,
+									pound: false,
+									franc: true
+								})
+							}
+						/>
+
+						<CheckBox
+							center
+							title="GBP"
+							checkedIcon="gbp"
+							uncheckedIcon="gbp"
+							checked={this.state.pound}
+							checkedColor="green"
+							uncheckedColor="red"
+							onPress={() =>
+								this.setState({
+									euro: false,
+									dollar: false,
+									kuna: false,
+									pound: true,
+									franc: false
+								})
+							}
+						/>
+					</View>
+
+					{/*kraj odabira valute*/}
+					<View
+						style={{
+							width: width * 0.88,
+							flexDirection: "row",
+							justifyContent: "flex-end"
+						}}
+					>
+						<TouchableOpacity style={styles.TouchableOpacityStyle}>
+							<Ionicons name="ios-checkmark" size={35} color="green" />
+							<Text style={{ color: "green", marginLeft: 10 }}>SAVE</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
+			);
+		}
+
 		return (
 			<View style={styles.container}>
 				<StatusBar hidden={true} />
@@ -107,7 +269,14 @@ export default class TransactionScreen extends React.Component {
 								justifyContent: "center"
 							}}
 						>
-							<TouchableOpacity style={styles.TouchableOpacityStyle}>
+							<TouchableOpacity
+								style={styles.TouchableOpacityStyle}
+								onPress={() =>
+									this.setState({
+										dataFieldsVisible: !this.state.dataFieldsVisible
+									})
+								}
+							>
 								<Ionicons name="ios-create" size={35} color="green" />
 							</TouchableOpacity>
 
@@ -119,127 +288,7 @@ export default class TransactionScreen extends React.Component {
 						</View>
 
 						{/*form input za trošak (ime, svota, valuta, save btn)*/}
-						<View
-							style={{
-								width: width * 0.95,
-								flexDirection: "column",
-								justifyContent: "center"
-							}}
-						>
-							<FormInput
-								placeholder="Insert wallet name"
-								containerStyle={[styles.input, { borderBottomColor: "green" }]}
-								inputStyle={{ width: width * 0.8 * 0.95 }}
-								underlineColorAndroid="transparent"
-								blurOnSubmit={false}
-								returnKeyType="next"
-							/>
-
-							<FormInput
-								placeholder="Insert wallet name"
-								containerStyle={[styles.input, { borderBottomColor: "green" }]}
-								inputStyle={{ width: width * 0.8 * 0.95 }}
-								underlineColorAndroid="transparent"
-								blurOnSubmit={false}
-								returnKeyType="next"
-							/>
-							{/*odabir valute*/}
-							<View
-								style={{
-									width: width,
-									flexDirection: "row",
-									justifyContent: "center",
-									marginTop : 25
-								}}
-							>
-								<CheckBox
-									title="EUR"
-									center
-									iconRight={false}
-									checkedIcon="euro"
-									uncheckedIcon="euro"
-									checkedColor="green"
-									uncheckedColor="red"
-									checked={this.state.euro}
-									onPress={() =>
-										this.setState({ euro: true, dollar: false, kuna: false })
-									}
-								/>
-
-								<CheckBox
-									title="USD"
-									center
-									checkedIcon="dollar"
-									uncheckedIcon="dollar"
-									checkedColor="green"
-									uncheckedColor="red"
-									checked={this.state.dollar}
-									onPress={() =>
-										this.setState({ euro: false, dollar: true, kuna: false })
-									}
-								/>
-
-								<CheckBox
-									center
-									title="HRK"
-									checkedIcon="money"
-									uncheckedIcon="money"
-									checked={this.state.kuna}
-									checkedColor="green"
-									uncheckedColor="red"
-									onPress={() =>
-										this.setState({ euro: false, dollar: false, kuna: true })
-									}
-								/>
-							</View>
-							<View
-								style={{
-									width: width,
-									flexDirection: "row",
-									justifyContent: "center"
-								}}
-							>
-								<CheckBox
-									title="CHF"
-									center
-									checkedIcon="money"
-									uncheckedIcon="money"
-									checkedColor="green"
-									uncheckedColor="red"
-									checked={this.state.dollar}
-									onPress={() =>
-										this.setState({ euro: false, dollar: true, kuna: false })
-									}
-								/>
-
-								<CheckBox
-									center
-									title="GBP"
-									checkedIcon="money"
-									uncheckedIcon="gbp"
-									checked={this.state.kuna}
-									checkedColor="green"
-									uncheckedColor="red"
-									onPress={() =>
-										this.setState({ euro: false, dollar: false, kuna: true })
-									}
-								/>
-							</View>
-
-							{/*kraj odabira valute*/}
-							<View
-								style={{
-									width: width * 0.88,
-									flexDirection: "row",
-									justifyContent: "flex-end"
-								}}
-							>
-								<TouchableOpacity style={styles.TouchableOpacityStyle}>
-									<Ionicons name="ios-checkmark" size={35} color="green" />
-									<Text style={{ color: "green", marginLeft: 10 }}>SAVE</Text>
-								</TouchableOpacity>
-							</View>
-						</View>
+						{dataFields}
 						{/**/}
 					</View>
 				</ScrollView>
