@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, views, status
+from rest_framework.response import Response
 from . import models
 from . import serializers
 
@@ -32,3 +33,11 @@ class WalletUpdateView(generics.RetrieveUpdateDestroyAPIView):
 class CreateTransactionView(generics.CreateAPIView):
 	serializer_class = serializers.TransactionSerializer
 	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+class TransactionCategoriesView(views.APIView):
+	def get(self, request):
+		return Response(models.Transaction.TRANSACTION_CHOICES, status=status.HTTP_200_OK)
+
+class CurrencyCategoriesView(views.APIView):
+	def get(self, request):
+		return Response(models.CURRENCY_CHOICES, status=status.HTTP_200_OK)

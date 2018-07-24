@@ -21,4 +21,4 @@ class TransactionSerializer(serializers.ModelSerializer):
 
 	def validate_date(self, value):
 		pass
-		# TODO: check date
+		# TODO: check date?

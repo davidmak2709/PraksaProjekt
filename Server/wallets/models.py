@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import date
+from currency_converter import CurrencyConverter
 from users import models as users_models
 
 EURO = 'EUR'
@@ -37,6 +38,7 @@ class Transaction(models.Model):
 	LEISURE_HOBBIES = 'leisure_hobbies'
 	UTILITIES = 'utilities'
 	VACATION = 'vacation'
+	OTHER = 'other'
 	TRANSACTION_CHOICES = (
 		(PAYCHECK, 'Paycheck'),
 		(GASOLINE, 'Car gas'),
@@ -50,6 +52,7 @@ class Transaction(models.Model):
 		(LEISURE_HOBBIES, 'Leisure and hobbies'),
 		(UTILITIES, 'Utilities (e.g. electricity bills)'),
 		(VACATION, 'Vacation'),
+		(OTHER, 'Other'),
 	)
 	wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
 	name = models.CharField(max_length=50)
@@ -62,7 +65,12 @@ class Transaction(models.Model):
 		return 'Transaction: {} {} {} {}'.format(self.wallet, self.category, self.amount, self.currency)
 
 	def save(self, *args, **kwargs):
-		# TODO: currency converter
-		wallet = Wallet.objects.filter(pk=self.wallet.pk)
-		wallet.update(balance=models.F('balance')+self.amount)
+		wallet = Wallet.objects.get(pk=self.wallet.pk)
+		if wallet.currency!=self.currency:
+			c = CurrencyConverter()
+			converted_amount = c.convert(self.amount, self.currency, wallet.currency)
+		else:
+			converted_amount = self.amount
+		wallet.balance += converted_amount
+		wallet.save()
 		models.Model.save(self, *args, **kwargs)
