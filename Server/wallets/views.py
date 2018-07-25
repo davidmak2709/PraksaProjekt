@@ -1,8 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from rest_framework import generics, permissions, views, status
 from rest_framework.response import Response
+from django_filters import rest_framework as filters
+from .filters import TransactionFilter
 from . import models
 from . import serializers
+from . import pagination
 
 class CreateWalletView(generics.CreateAPIView):
 	serializer_class = serializers.WalletSerializer
@@ -33,6 +36,17 @@ class WalletUpdateView(generics.RetrieveUpdateDestroyAPIView):
 class CreateTransactionView(generics.CreateAPIView):
 	serializer_class = serializers.TransactionSerializer
 	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+class TransactionListView(generics.ListAPIView):
+	serializer_class = serializers.TransactionSerializer
+	permission_classes = (permissions.IsAuthenticated,)
+	pagination_class = pagination.TransactionPageNumberPagination
+	filter_backends = (filters.DjangoFilterBackend,)
+	filterset_class = TransactionFilter
+
+	def get_queryset(self):
+		current_user = self.request.user
+		return models.Transaction.objects.filter(wallet__in=models.Wallet.objects.filter(user=current_user.pk))
 
 class TransactionCategoriesView(views.APIView):
 	def get(self, request):
