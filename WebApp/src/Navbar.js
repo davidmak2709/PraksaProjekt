@@ -5,6 +5,7 @@ import Statistics from './Statistics'
 import Signup from './Signup'
 import Profile from './Profile'
 import Wallet from './Wallet'
+import Output from './Output'
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import axios from 'axios';
 
@@ -69,7 +70,7 @@ class Navbar extends Component{
     			      <li className="active"><a href="/">Home</a></li>
     			      <li className="dropdown"><a className="dropdown-toggle" data-toggle="dropdown" href="#">Manage <span className="caret"></span></a>
     			        <ul className="dropdown-menu">
-    			          <li><a href="#">Ulazi</a></li>
+    			          <li><a href="/output">Output</a></li>
     			          <li><a href="#">Izlazi</a></li>
     			          <li><a href="#">Investicije</a></li>
     			        </ul>
@@ -87,6 +88,8 @@ class Navbar extends Component{
           <Route path="/statistics" component={Statistics} />
           <Route path="/profile" component={Profile} />
           <Route path="/wallet" component={Wallet} />
+          <Route path="/output" component={Output} />
+
 
     		</div>
       </Router>

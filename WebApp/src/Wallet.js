@@ -69,11 +69,13 @@ handleSubmit(event) {
     });
 
 }
+
 handleChange = event => {
   this.setState({
     [event.target.id]: event.target.value
   });
 }
+
 renderaddform(){
     if(this.state.addform){
       return   (
@@ -104,8 +106,7 @@ renderwallet(){
     var wallets = [];
     for(var i = 0 ; i < this.state.length ; i++){
       if(this.state.wallets[this.state.length-1]){
-      var str = JSON.stringify(this.state.wallets[0]);
-      console.log(str);
+
       var obj = this.state.wallets[i];
       console.log(obj);
       wallets.push(
