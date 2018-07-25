@@ -18,11 +18,12 @@ import {
 } from "react-native-elements";
 import PropTypes from "prop-types";
 import NewWalletDialog from "./NewWalletDialog";
+import { width, height } from "../constants";
+import { connect } from "react-redux";
+import { updateWallet, deleteWallet } from "../redux/actions";
 
-const { height, width } = Dimensions.get("window");
 
-export default class Wallet extends Component {
-	static token;
+class Wallet extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -48,6 +49,7 @@ export default class Wallet extends Component {
 			.then(response => {
 				if (response.status == 204) {
 					this.setState({ visible: false, editWallet: false });
+					this.props.deleteWallet(this.props.pk);
 				}
 			})
 			.catch(error => {
@@ -56,6 +58,7 @@ export default class Wallet extends Component {
 	}
 
 	_updateWallet() {
+
 		const name = this.state.name;
 		const balance = this.state.balance;
 
@@ -70,6 +73,10 @@ export default class Wallet extends Component {
 			currency = "USD";
 		} else if (this.state.euro) {
 			currency = "EUR";
+		} else if (this.state.pound) {
+			currency = "GBP";
+		} else if (this.state.franc) {
+			currency = "CHF";
 		} else {
 			currency = this.props.currency;
 		}
@@ -107,7 +114,13 @@ export default class Wallet extends Component {
 			})
 				.then(response => {
 					if (response.status == 200) {
-						Alert.alert("Updated. Refresh! :)");
+						Alert.alert("Updated. :)");
+						this.props.updateWallet( {
+							pk: this.props.pk,
+							balance: balance,
+							currency: currency,
+							name: name
+					});
 					} else {
 						Alert.alert("Error");
 					}
@@ -126,7 +139,7 @@ export default class Wallet extends Component {
 		}
 		if (this.state.visible) {
 			return (
-				<View style={styles.main}>
+				<View style={[styles.main, {height: height * 0.4} ]}>
 					<View style={styles.header}>
 						<View
 							style={{ flexDirection: "column", flex: 1, flexWrap: "wrap" }}
@@ -174,7 +187,7 @@ export default class Wallet extends Component {
 			);
 		} else if (this.state.editWallet) {
 			return (
-				<View style={styles.main}>
+				<View style={[styles.main, {height: height * 0.5} ]}>
 					<View style={styles.header}>
 						<View
 							style={{ flexDirection: "column", flex: 1, flexWrap: "wrap" }}
@@ -245,7 +258,13 @@ export default class Wallet extends Component {
 								checked={this.state.euro}
 								containerStyle={styles.currencyOptionContainer}
 								onPress={() =>
-									this.setState({ euro: true, dollar: false, kuna: false })
+									this.setState({
+										euro: true,
+										dollar: false,
+										kuna: false,
+										pound: false,
+										franc: false
+									})
 								}
 							/>
 
@@ -259,7 +278,13 @@ export default class Wallet extends Component {
 								uncheckedColor="red"
 								checked={this.state.dollar}
 								onPress={() =>
-									this.setState({ euro: false, dollar: true, kuna: false })
+									this.setState({
+										euro: false,
+										dollar: true,
+										kuna: false,
+										pound: false,
+										franc: false
+									})
 								}
 							/>
 
@@ -273,7 +298,60 @@ export default class Wallet extends Component {
 								uncheckedColor="red"
 								containerStyle={styles.currencyOptionContainer}
 								onPress={() =>
-									this.setState({ euro: false, dollar: false, kuna: true })
+									this.setState({
+										euro: false,
+										dollar: false,
+										kuna: true,
+										pound: false,
+										franc: false
+									})
+								}
+							/>
+						</View>
+						<View
+							style={{
+								flexDirection: "row",
+								justifyContent: "center",
+
+							}}
+						>
+							<CheckBox
+								title="CHF"
+								center
+								checkedIcon="money"
+								uncheckedIcon="money"
+								checkedColor="green"
+								uncheckedColor="red"
+								checked={this.state.franc}
+								containerStyle={styles.currencyOptionContainer}
+								onPress={() =>
+									this.setState({
+										euro: false,
+										dollar: false,
+										kuna: false,
+										pound: false,
+										franc: true
+									})
+								}
+							/>
+
+							<CheckBox
+								center
+								title="GBP"
+								checkedIcon="gbp"
+								uncheckedIcon="gbp"
+								checked={this.state.pound}
+								checkedColor="green"
+								uncheckedColor="red"
+								containerStyle={styles.currencyOptionContainer}
+								onPress={() =>
+									this.setState({
+										euro: false,
+										dollar: false,
+										kuna: false,
+										pound: true,
+										franc: false
+									})
 								}
 							/>
 						</View>
@@ -305,7 +383,7 @@ export default class Wallet extends Component {
 
 const styles = StyleSheet.create({
 	main: {
-		height: height * 0.4,
+
 		width: width * 0.85,
 		margin: 10,
 		backgroundColor: "transparent",
@@ -350,4 +428,10 @@ Wallet.propTypes = {
 	currency: PropTypes.string.isRequired
 };
 
-AppRegistry.registerComponent("Wallet", () => Wallet);
+function mapStateToProps(state) {
+	return {
+		wallets: state.wallets
+	};
+}
+
+export default connect(	mapStateToProps,	{ updateWallet, deleteWallet })(Wallet);

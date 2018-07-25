@@ -21,12 +21,21 @@ import NewWalletDialog from "../components/NewWalletDialog";
 import { height, width } from "../constants";
 
 class WalletTab extends React.Component {
+	static userToken;
+
 	constructor() {
 		super();
 		this.state = {
 			walletModal: false
 		};
+		this._bootstrapAsync();
+
 	}
+
+	_bootstrapAsync = async () => {
+		userToken = await AsyncStorage.getItem("userToken");
+	}
+
 
 	_keyExtractor = (item, index) => item.pk.toString();
 
@@ -35,7 +44,7 @@ class WalletTab extends React.Component {
 			<Wallet
 				name={item.name}
 				balance={item.balance}
-				token="{token}"
+				token={userToken}
 				currency={item.currency}
 				pk={item.pk}
 				user={item.user}
@@ -44,7 +53,7 @@ class WalletTab extends React.Component {
 	};
 
 	render() {
-		
+
 		return (
 			<View style={{ flex: 1 }}>
 				<FlatList

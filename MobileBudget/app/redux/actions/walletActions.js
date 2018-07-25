@@ -11,3 +11,18 @@ export const addWallet = (data) => {
     payload : data
   }
 }
+
+
+export const updateWallet = (data) => {
+  return {
+    type : "UPDATE_WALLET",
+    payload : data
+  }
+}
+
+export const deleteWallet = (pk) => {
+  return {
+    type : "DELETE_WALLET",
+    payload : pk
+  }
+}

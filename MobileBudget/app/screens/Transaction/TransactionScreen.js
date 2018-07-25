@@ -1,6 +1,7 @@
 import React from "react";
 import {
 	ActivityIndicator,
+	Alert,
 	AsyncStorage,
 	AppRegistry,
 	StyleSheet,
@@ -22,10 +23,14 @@ import { height, width } from "../../constants/";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { connect } from "react-redux";
 
+//TODO validacija
+
 class TransactionScreen extends React.Component {
+	static userToken = "";
 	constructor(props) {
 		super(props);
 		this.state = {
+			response : [],
 			transactionType: true,
 			dataFieldsVisible: false,
 			euro: true,
@@ -33,17 +38,122 @@ class TransactionScreen extends React.Component {
 			dollar: false,
 			pound: false,
 			franc: false,
-			language: "java"
+			wallet: "",
+			category: "paycheck",
+			name: "",
+			amount: 0,
 		};
+
+
+		this._getCategories();
+		this._bootstrapAsync();
+	}
+
+	componentDidMount(){
+		if(this.props.wallets.length > 0){
+			this.setState({ wallet : this.props.wallets[0].pk })
+		}
+	}
+
+	_bootstrapAsync = async () => {
+		userToken = await AsyncStorage.getItem("userToken");
+	}
+
+	_getCategories = () => {
+		fetch("http://46.101.226.120:8000/api/wallets/transactions/categories/", {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+
+			}
+		})
+			.then(response => response.json())
+			.then(responseJson => {
+				this.setState({response : responseJson});
+			})
+			.catch(error => {
+				console.error(error);
+			});
+
+	};
+
+
+	_newTransaction = () => {
+		let amount = this.state.amount;
+		if(this.state.transactionType ==  false){
+			amount = amount * -1;
+		}
+
+		let currency = "";
+
+		if (this.state.kuna) {
+			currency = "HRK";
+		} else if (this.state.dollar) {
+			currency = "USD";
+		} else if (this.state.euro) {
+			currency = "EUR";
+		} else if (this.state.pound) {
+			currency = "GBP";
+		} else {
+			currency = "CHF";
+		}
+
+
+		fetch("http://46.101.226.120:8000/api/wallets/transactions/create/", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: "Token " + userToken
+			},
+			body: JSON.stringify({
+					wallet : this.state.wallet,
+					name : this.state.name,
+					amount : amount,
+					currency: currency,
+					category:this.state.category,
+			})
+		})
+			.then(response => response.json())
+			.then(responseJson => {
+				if (responseJson.name) {
+					Alert.alert("Name", responseJson.name[0]);
+				}
+			})
+			.catch(error => {
+				console.error(error);
+			});
+	};
+
+
+
+	_setTransactionName = (name) => {
+		this.setState({name : name});
+	}
+
+	_setTransactionAmount = (amount) => {
+		this.setState({amount : parseFloat(amount)});
 	}
 
 	render() {
 		let walletsArray = [];
-		for (var i = 0; i < 4; i++) {
+		for (var i = 0; i < this.props.wallets.length; i++) {
 			walletsArray.push(
 				<Picker.Item label={this.props.wallets[i].name} value={this.props.wallets[i].pk} key = {i} />
 			);
+
 		}
+
+
+
+		let categoriesArray = this.state.response;
+		let categories = [];
+		for (var i = 0; i < categoriesArray.length; i++) {
+			categories.push(
+				<Picker.Item label={categoriesArray[i][1]} value={categoriesArray[i][0]} key = {i} />
+			);
+		}
+
+
 
 		let dataFields = null;
 		if (this.state.dataFieldsVisible) {
@@ -56,21 +166,23 @@ class TransactionScreen extends React.Component {
 					}}
 				>
 					<FormInput
-						placeholder="Insert wallet name"
+						placeholder="Insert transaction name"
 						containerStyle={[styles.input, { borderBottomColor: "green" }]}
 						inputStyle={{ width: width * 0.8 * 0.95 }}
 						underlineColorAndroid="transparent"
 						blurOnSubmit={false}
 						returnKeyType="next"
+						onChangeText = {this._setTransactionName.bind(this)}
 					/>
 
 					<FormInput
-						placeholder="Insert wallet name"
+						placeholder="Insert transaction amount"
 						containerStyle={[styles.input, { borderBottomColor: "green" }]}
 						inputStyle={{ width: width * 0.8 * 0.95 }}
 						underlineColorAndroid="transparent"
 						blurOnSubmit={false}
 						returnKeyType="next"
+						onChangeText = {this._setTransactionAmount.bind(this)}
 					/>
 					{/*odabir valute*/}
 					<View
@@ -193,7 +305,7 @@ class TransactionScreen extends React.Component {
 							justifyContent: "flex-end"
 						}}
 					>
-						<TouchableOpacity style={styles.TouchableOpacityStyle}>
+						<TouchableOpacity style={styles.TouchableOpacityStyle} onPress = {this._newTransaction.bind(this)}>
 							<Ionicons name="ios-checkmark" size={35} color="green" />
 							<Text style={{ color: "green", marginLeft: 10 }}>SAVE</Text>
 						</TouchableOpacity>
@@ -242,11 +354,11 @@ class TransactionScreen extends React.Component {
 					<View style={styles.subContainer}>
 						<Text>Wallet: </Text>
 						<Picker
-							selectedValue={this.state.language}
+							selectedValue={this.state.wallet}
 							mode="dialog"
 							style={{ height: 50, width: width * 0.95 }}
 							onValueChange={(itemValue, itemIndex) =>
-								this.setState({ language: itemValue })
+								this.setState({ wallet: itemValue })
 							}
 						>
 							{walletsArray}
@@ -256,14 +368,13 @@ class TransactionScreen extends React.Component {
 					<View style={styles.subContainer}>
 						<Text>Category: </Text>
 						<Picker
-							selectedValue={this.state.language}
+							selectedValue={this.state.category}
 							style={{ height: 50, width: width * 0.95 }}
 							onValueChange={(itemValue, itemIndex) =>
-								this.setState({ language: itemValue })
+								this.setState({ category: itemValue })
 							}
 						>
-							<Picker.Item label="Java" value="java" />
-							<Picker.Item label="JavaScript" value="js" />
+							{categories}
 						</Picker>
 					</View>
 					{/* odabir načina unosa parametara */}
