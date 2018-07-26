@@ -1,9 +1,13 @@
 import { createStackNavigator, createSwitchNavigator } from "react-navigation";
+import {Easing, Animated} from "react-native";
 
 import LoginScreen from "../screens/Login/LoginScreen";
 import AuthLoadingScreen from "../screens/AuthLoading/AuthLoadingScreen";
 import SignupScreen from "../screens/Signup/SignupScreen";
 import TransactionScreen from "../screens/Transaction/TransactionScreen";
+import CameraScreen from "../screens/Camera/CameraScreen";
+import NewWalletDialog from "../components/NewWalletDialog";
+
 import navTab from "./TabNavigation";
 
 const AppStack = createStackNavigator({
@@ -19,7 +23,21 @@ const AppStack = createStackNavigator({
 			title: `Add new transaction`,
 		})
 	},
-
+	Camera: {
+		screen: CameraScreen,
+		navigationOptions: ({ navigation }) => ({
+			title: `Camera scan`,
+		})
+	},
+	NewWalletDialog: {
+		screen: NewWalletDialog,
+		transitionConfig: {
+			isModal: true
+		},
+		navigationOptions: ({ navigation }) => ({
+			header: null,
+		})
+	},
 });
 
 const AuthStack = createStackNavigator({

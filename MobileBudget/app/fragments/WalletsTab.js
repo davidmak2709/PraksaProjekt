@@ -17,7 +17,6 @@ import { connect } from "react-redux";
 import { setWallets } from "../redux/actions";
 
 import Wallet from "../components/Wallet";
-import NewWalletDialog from "../components/NewWalletDialog";
 import { height, width } from "../constants";
 
 class WalletTab extends React.Component {
@@ -68,13 +67,12 @@ class WalletTab extends React.Component {
 				/>
 				<TouchableOpacity
 					activeOpacity={0.5}
-					onPress={() => this.setState({ walletModal: true })}
+					onPress={() => this.props.navigation.navigate("NewWalletDialog")}
 					style={styles.TouchableOpacityStyle}
 				>
 					<Icon color="white" name="add" size={30} />
 				</TouchableOpacity>
 
-				<NewWalletDialog visible={this.state.walletModal} />
 			</View>
 		);
 	}

@@ -115,6 +115,7 @@ class TransactionScreen extends React.Component {
 		})
 			.then(response => response.json())
 			.then(responseJson => {
+				console.log(responseJson);
 				if (responseJson.name) {
 					Alert.alert("Name", responseJson.name[0]);
 				}
@@ -132,6 +133,16 @@ class TransactionScreen extends React.Component {
 
 	_setTransactionAmount = (amount) => {
 		this.setState({amount : parseFloat(amount)});
+	}
+
+
+	_goToCameraScanPage = () => {
+		this.props.navigation.push("Camera", {returnData : this._callbackCameraScan.bind(this)});
+	}
+
+	_callbackCameraScan = (name, amount,currency) => {
+		this.setState({dataFieldsVisible : true,name : name, amount : amount, currency : currency});
+		console.log(currency);
 	}
 
 	render() {
@@ -173,6 +184,7 @@ class TransactionScreen extends React.Component {
 						blurOnSubmit={false}
 						returnKeyType="next"
 						onChangeText = {this._setTransactionName.bind(this)}
+						value = {this.state.name}
 					/>
 
 					<FormInput
@@ -183,6 +195,7 @@ class TransactionScreen extends React.Component {
 						blurOnSubmit={false}
 						returnKeyType="next"
 						onChangeText = {this._setTransactionAmount.bind(this)}
+						value = {this.state.amount.toString()}
 					/>
 					{/*odabir valute*/}
 					<View
@@ -400,7 +413,8 @@ class TransactionScreen extends React.Component {
 
 							<Divider style={{ width: width * 0.1 }} />
 
-							<TouchableOpacity style={styles.TouchableOpacityStyle}>
+							<TouchableOpacity style={styles.TouchableOpacityStyle}
+								onPress = {this._goToCameraScanPage.bind(this)}>
 								<Ionicons name="ios-camera" size={35} color="green" />
 							</TouchableOpacity>
 						</View>

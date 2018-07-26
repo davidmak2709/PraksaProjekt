@@ -27,7 +27,6 @@ class NewWalletDialog extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			modalVisible: props.visible,
 			euro: true,
 			dollar: false,
 			kuna: false,
@@ -46,16 +45,6 @@ class NewWalletDialog extends Component {
 		token = userToken;
 	};
 
-	componentWillReceiveProps(nextProps) {
-		if (nextProps.visible) {
-			this.setErrorDialogVisible(nextProps.visible);
-		}
-	}
-
-	setErrorDialogVisible(visible) {
-		if (this.state.modalVisible != visible)
-			this.setState({ modalVisible: visible });
-	}
 
 	createNewWallet() {
 		const name = this.state.name;
@@ -117,7 +106,7 @@ class NewWalletDialog extends Component {
 				.then(([res, data]) => {
 					if (res == 201) {
 						this.props.addWallet(data);
-						this.setState({ modalVisible: false });
+						this.props.navigation.pop();
 					} else {
 						Alert.alert("Error");
 					}
@@ -134,7 +123,7 @@ class NewWalletDialog extends Component {
 			<Modal
 				animationType="fade"
 				transparent={true}
-				visible={this.state.modalVisible}
+				visible={true}
 				onRequestClose={() => {
 					console.log("Close.");
 				}}
@@ -292,7 +281,7 @@ class NewWalletDialog extends Component {
 						<View style={styles.footer}>
 							<TouchableOpacity
 								activeOpacity={0.5}
-								onPress={() => this.setErrorDialogVisible(false)}
+								onPress={() => this.props.navigation.pop()}
 							>
 								<Text style={{ color: "green", fontSize: 22 }}>CLOSE</Text>
 							</TouchableOpacity>

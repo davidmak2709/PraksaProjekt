@@ -147,7 +147,7 @@ class Wallet extends Component {
 							<Text h4>{this.state.name}</Text>
 						</View>
 						<View style={styles.iconsLayout}>
-							<Icon color="gold" name="star-border" size={30} />
+							<Icon color="green" name="search" size={30} />
 							<Divider style={{ backgroundColor: "transparent", width: 20 }} />
 							<Icon
 								color="green"
