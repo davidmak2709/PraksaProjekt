@@ -48,6 +48,16 @@ class TransactionListView(generics.ListAPIView):
 		current_user = self.request.user
 		return models.Transaction.objects.filter(wallet__in=models.Wallet.objects.filter(user=current_user.pk))
 
+class TransactionRetrieveDeleteView(generics.RetrieveDestroyAPIView):
+	serializer_class = serializers.TransactionSerializer
+	permission_classes = (permissions.IsAuthenticated,)
+
+	def get_object(self):
+		current_user = self.request.user
+		selected_transaction = self.kwargs['pk']
+		obj = get_object_or_404(models.Transaction, pk=selected_transaction, wallet__in=models.Wallet.objects.filter(user=current_user.pk))
+		return obj
+
 class TransactionCategoriesView(views.APIView):
 	def get(self, request):
 		return Response(models.Transaction.TRANSACTION_CHOICES, status=status.HTTP_200_OK)

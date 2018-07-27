@@ -74,3 +74,14 @@ class Transaction(models.Model):
 		wallet.balance += converted_amount
 		wallet.save()
 		models.Model.save(self, *args, **kwargs)
+
+	def delete(self, *args, **kwargs):
+		wallet = Wallet.objects.get(pk=self.wallet.pk)
+		if wallet.currency!=self.currency:
+			c = CurrencyConverter()
+			converted_amount = c.convert(self.amount, self.currency, wallet.currency)
+		else:
+			converted_amount = self.amount
+		wallet.balance -= converted_amount
+		wallet.save()
+		models.Model.delete(self, *args, **kwargs)
