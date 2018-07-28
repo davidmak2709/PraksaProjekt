@@ -22,15 +22,14 @@ import {
 import { height, width } from "../../constants/";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { connect } from "react-redux";
-
-//TODO validacija
+import { updateWallet } from "../../redux/actions";
 
 class TransactionScreen extends React.Component {
 	static userToken = "";
 	constructor(props) {
 		super(props);
 		this.state = {
-			response : [],
+			response: [],
 			transactionType: true,
 			dataFieldsVisible: false,
 			euro: true,
@@ -41,46 +40,43 @@ class TransactionScreen extends React.Component {
 			wallet: "",
 			category: "paycheck",
 			name: "",
-			amount: 0,
+			amount: 0
 		};
-
 
 		this._getCategories();
 		this._bootstrapAsync();
+		this._getUpdatedStatus = this._getUpdatedStatus.bind(this);
 	}
 
-	componentDidMount(){
-		if(this.props.wallets.length > 0){
-			this.setState({ wallet : this.props.wallets[0].pk })
+	componentDidMount() {
+		if (this.props.wallets.length > 0) {
+			this.setState({ wallet: this.props.wallets[0].pk });
 		}
 	}
 
 	_bootstrapAsync = async () => {
 		userToken = await AsyncStorage.getItem("userToken");
-	}
+	};
 
 	_getCategories = () => {
 		fetch("http://46.101.226.120:8000/api/wallets/transactions/categories/", {
 			method: "GET",
 			headers: {
-				"Content-Type": "application/json",
-
+				"Content-Type": "application/json"
 			}
 		})
 			.then(response => response.json())
 			.then(responseJson => {
-				this.setState({response : responseJson});
+				this.setState({ response: responseJson });
 			})
 			.catch(error => {
 				console.error(error);
 			});
-
 	};
-
 
 	_newTransaction = () => {
 		let amount = this.state.amount;
-		if(this.state.transactionType ==  false){
+		if (this.state.transactionType == false) {
 			amount = amount * -1;
 		}
 
@@ -98,7 +94,6 @@ class TransactionScreen extends React.Component {
 			currency = "CHF";
 		}
 
-
 		fetch("http://46.101.226.120:8000/api/wallets/transactions/create/", {
 			method: "POST",
 			headers: {
@@ -106,65 +101,104 @@ class TransactionScreen extends React.Component {
 				Authorization: "Token " + userToken
 			},
 			body: JSON.stringify({
-					wallet : this.state.wallet,
-					name : this.state.name,
-					amount : amount,
-					currency: currency,
-					category:this.state.category,
+				wallet: this.state.wallet,
+				name: this.state.name,
+				amount: amount,
+				currency: currency,
+				category: this.state.category
 			})
 		})
-			.then(response => response.json())
-			.then(responseJson => {
-				console.log(responseJson);
-				if (responseJson.name) {
-					Alert.alert("Name", responseJson.name[0]);
-				}
+		.then(response => {
+			const statusCode = response.status;
+			const data = response.json();
+			return Promise.all([statusCode, data]);
+		})
+		.then(([res, data]) => {
+			if (res == 201) {
+				Alert.alert("Confirmation","Transaction recorded." )
+				this._getUpdatedStatus();
+			} else {
+				Alert.alert("Error");
+			}
+		})
+		.catch(error => {
+			console.error(error);
+		});
+
+	};
+
+	_getUpdatedStatus = () => {
+		fetch("http://46.101.226.120:8000/api/wallets/"+ this.state.wallet +"/", {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: "Token " + userToken
+			}
+		})
+			.then(response =>response.json())
+			.then(data => {
+
+				this.props.updateWallet({
+						pk: data.pk,
+						balance: parseFloat(data.balance),
+						currency: data.currency,
+						name: data.name
+				});
 			})
 			.catch(error => {
 				console.error(error);
 			});
+
+
 	};
 
+	_setTransactionName = name => {
+		this.setState({ name: name });
+	};
 
-
-	_setTransactionName = (name) => {
-		this.setState({name : name});
-	}
-
-	_setTransactionAmount = (amount) => {
-		this.setState({amount : parseFloat(amount)});
-	}
-
+	_setTransactionAmount = amount => {
+		this.setState({ amount: parseFloat(amount) });
+	};
 
 	_goToCameraScanPage = () => {
-		this.props.navigation.push("Camera", {returnData : this._callbackCameraScan.bind(this)});
-	}
+		this.props.navigation.push("Camera", {
+			returnData: this._callbackCameraScan.bind(this)
+		});
+	};
 
-	_callbackCameraScan = (name, amount,currency) => {
-		this.setState({dataFieldsVisible : true,name : name, amount : amount, currency : currency});
+	_callbackCameraScan = (name, amount, currency) => {
+		this.setState({
+			dataFieldsVisible: true,
+			name: name,
+			amount: amount,
+			currency: currency
+		});
 		console.log(currency);
-	}
+	};
 
 	render() {
 		let walletsArray = [];
 		for (var i = 0; i < this.props.wallets.length; i++) {
 			walletsArray.push(
-				<Picker.Item label={this.props.wallets[i].name} value={this.props.wallets[i].pk} key = {i} />
+				<Picker.Item
+					label={this.props.wallets[i].name}
+					value={this.props.wallets[i].pk}
+					key={i}
+				/>
 			);
-
 		}
-
-
 
 		let categoriesArray = this.state.response;
 		let categories = [];
 		for (var i = 0; i < categoriesArray.length; i++) {
 			categories.push(
-				<Picker.Item label={categoriesArray[i][1]} value={categoriesArray[i][0]} key = {i} />
+				<Picker.Item
+					label={categoriesArray[i][1]}
+					value={categoriesArray[i][0]}
+					key={i}
+				/>
 			);
 		}
-
-
 
 		let dataFields = null;
 		if (this.state.dataFieldsVisible) {
@@ -183,8 +217,8 @@ class TransactionScreen extends React.Component {
 						underlineColorAndroid="transparent"
 						blurOnSubmit={false}
 						returnKeyType="next"
-						onChangeText = {this._setTransactionName.bind(this)}
-						value = {this.state.name}
+						onChangeText={this._setTransactionName.bind(this)}
+						value={isNaN(this.state.name) ? null : this.state.name.toString() }
 					/>
 
 					<FormInput
@@ -194,8 +228,8 @@ class TransactionScreen extends React.Component {
 						underlineColorAndroid="transparent"
 						blurOnSubmit={false}
 						returnKeyType="next"
-						onChangeText = {this._setTransactionAmount.bind(this)}
-						value = {this.state.amount.toString()}
+						onChangeText={this._setTransactionAmount.bind(this)}
+						value={isNaN(this.state.amount) ? null : this.state.amount.toString() }
 					/>
 					{/*odabir valute*/}
 					<View
@@ -318,7 +352,10 @@ class TransactionScreen extends React.Component {
 							justifyContent: "flex-end"
 						}}
 					>
-						<TouchableOpacity style={styles.TouchableOpacityStyle} onPress = {this._newTransaction.bind(this)}>
+						<TouchableOpacity
+							style={styles.TouchableOpacityStyle}
+							onPress={this._newTransaction.bind(this)}
+						>
 							<Ionicons name="ios-checkmark" size={35} color="green" />
 							<Text style={{ color: "green", marginLeft: 10 }}>SAVE</Text>
 						</TouchableOpacity>
@@ -413,8 +450,10 @@ class TransactionScreen extends React.Component {
 
 							<Divider style={{ width: width * 0.1 }} />
 
-							<TouchableOpacity style={styles.TouchableOpacityStyle}
-								onPress = {this._goToCameraScanPage.bind(this)}>
+							<TouchableOpacity
+								style={styles.TouchableOpacityStyle}
+								onPress={this._goToCameraScanPage.bind(this)}
+							>
 								<Ionicons name="ios-camera" size={35} color="green" />
 							</TouchableOpacity>
 						</View>
@@ -462,4 +501,7 @@ function mapStateToProps(state) {
 		wallets: state.wallets
 	};
 }
-export default connect(	mapStateToProps,	null)(TransactionScreen);
+export default connect(
+	mapStateToProps,
+	{ updateWallet }
+)(TransactionScreen);

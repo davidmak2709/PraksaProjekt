@@ -113,7 +113,6 @@ class NewWalletDialog extends Component {
 				})
 				.catch(error => {
 					console.error(error);
-					return { name: "network error", description: "" };
 				});
 		}
 	}

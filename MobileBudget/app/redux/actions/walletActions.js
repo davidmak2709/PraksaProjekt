@@ -1,27 +1,34 @@
+import {
+	SET_WALLETS,
+	ADD_WALLET,
+	UPDATE_WALLET,
+	DELETE_WALLET
+} from "../types";
+
 export const setWallets = data => {
 	return {
-		type: "SET_WALLETS",
+		type: SET_WALLETS,
 		payload: data
 	};
 };
 
 export const addWallet = data => {
 	return {
-		type: "ADD_WALLET",
+		type: ADD_WALLET,
 		payload: data
 	};
 };
 
 export const updateWallet = data => {
 	return {
-		type: "UPDATE_WALLET",
+		type: UPDATE_WALLET,
 		payload: data
 	};
 };
 
 export const deleteWallet = pk => {
 	return {
-		type: "DELETE_WALLET",
+		type: DELETE_WALLET,
 		payload: pk
 	};
 };

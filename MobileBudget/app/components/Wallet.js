@@ -117,7 +117,7 @@ class Wallet extends Component {
 						Alert.alert("Updated. :)");
 						this.props.updateWallet( {
 							pk: this.props.pk,
-							balance: balance,
+							balance: parseFloat(balance),
 							currency: currency,
 							name: name
 					});

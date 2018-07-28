@@ -12,7 +12,7 @@ import {
 	RefreshControl,
 	FlatList
 } from "react-native";
-import { Icon } from "react-native-elements";
+import { Icon, Button } from "react-native-elements";
 import { connect } from "react-redux";
 import { setWallets } from "../redux/actions";
 
@@ -24,9 +24,6 @@ class WalletTab extends React.Component {
 
 	constructor() {
 		super();
-		this.state = {
-			walletModal: false
-		};
 		this._bootstrapAsync();
 
 	}
@@ -51,8 +48,10 @@ class WalletTab extends React.Component {
 		);
 	};
 
-	render() {
 
+
+
+	render() {
 		return (
 			<View style={{ flex: 1 }}>
 				<FlatList
@@ -72,7 +71,6 @@ class WalletTab extends React.Component {
 				>
 					<Icon color="white" name="add" size={30} />
 				</TouchableOpacity>
-
 			</View>
 		);
 	}
