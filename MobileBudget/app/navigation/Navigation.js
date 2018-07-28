@@ -6,11 +6,13 @@ import AuthLoadingScreen from "../screens/AuthLoading/AuthLoadingScreen";
 import SignupScreen from "../screens/Signup/SignupScreen";
 import TransactionScreen from "../screens/Transaction/TransactionScreen";
 import CameraScreen from "../screens/Camera/CameraScreen";
+import WalletTransactions from "../screens/WalletTransactions/WalletTransactions";
 import NewWalletDialog from "../components/NewWalletDialog";
 
 import navTab from "./TabNavigation";
 
 const AppStack = createStackNavigator({
+
 	Home: {
 		screen: navTab,
 		navigationOptions: ({ navigation }) => ({
@@ -31,13 +33,18 @@ const AppStack = createStackNavigator({
 	},
 	NewWalletDialog: {
 		screen: NewWalletDialog,
-		transitionConfig: {
-			isModal: true
-		},
 		navigationOptions: ({ navigation }) => ({
 			header: null,
 		})
 	},
+	WalletTransactions: {
+		screen: WalletTransactions,
+		navigationOptions: ({ navigation }) => ({
+			title: `Details`,
+		})
+	},
+
+
 });
 
 const AuthStack = createStackNavigator({

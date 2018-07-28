@@ -1,0 +1,15 @@
+export const ICONS = {
+  gasoline: require("./gasoline.png"),
+  paycheck: require("./paycheck.png"),
+  charity: require("./charity.png"),
+  clothing: require("./clothing.png"),
+  gifts: require("./gifts.png"),
+  groceries: require("./groceries.png"),
+  healthcare: require("./healthcare.png"),
+  hobby: require("./hobby.png"),
+  household: require("./household.png"),
+  insurance: require("./insurance.png"),
+  other: require("./other.png"),
+  utilities: require("./utilities.png"),
+  vacation: require("./vacation.png"),
+};

@@ -44,6 +44,7 @@ class WalletTab extends React.Component {
 				currency={item.currency}
 				pk={item.pk}
 				user={item.user}
+				navigation = {this.props.navigation}
 			/>
 		);
 	};

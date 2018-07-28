@@ -22,7 +22,6 @@ import { width, height } from "../constants";
 import { connect } from "react-redux";
 import { updateWallet, deleteWallet } from "../redux/actions";
 
-
 class Wallet extends Component {
 	constructor(props) {
 		super(props);
@@ -131,6 +130,10 @@ class Wallet extends Component {
 		}
 	}
 
+	_goToDetailsPage = () => {
+		this.props.navigation.navigate("WalletTransactions", {pk :  this.props.pk});
+	}
+
 	render() {
 		let color = "darkseagreen";
 		let state = this.state.balance;
@@ -147,7 +150,7 @@ class Wallet extends Component {
 							<Text h4>{this.state.name}</Text>
 						</View>
 						<View style={styles.iconsLayout}>
-							<Icon color="green" name="search" size={30} />
+							<Icon color="green" name="search" size={30}  onPress = {this._goToDetailsPage.bind(this)}/>
 							<Divider style={{ backgroundColor: "transparent", width: 20 }} />
 							<Icon
 								color="green"
