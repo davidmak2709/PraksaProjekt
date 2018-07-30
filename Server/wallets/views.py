@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from rest_framework import generics, permissions, views, status
 from rest_framework.response import Response
+from rest_framework.filters import OrderingFilter
 from django_filters import rest_framework as filters
 from .filters import TransactionFilter
 from . import models
@@ -24,7 +25,7 @@ class WalletListView(generics.ListAPIView):
 		return models.Wallet.objects.filter(user=current_user.pk)
 
 class WalletUpdateView(generics.RetrieveUpdateDestroyAPIView):
-	serializer_class = serializers.WalletSerializer
+	serializer_class = serializers.WalletUpdateSerializer
 	permission_classes = (permissions.IsAuthenticated,)
 
 	def get_object(self):
@@ -41,8 +42,10 @@ class TransactionListView(generics.ListAPIView):
 	serializer_class = serializers.TransactionSerializer
 	permission_classes = (permissions.IsAuthenticated,)
 	pagination_class = pagination.TransactionPageNumberPagination
-	filter_backends = (filters.DjangoFilterBackend,)
+	filter_backends = (filters.DjangoFilterBackend, OrderingFilter)
 	filterset_class = TransactionFilter
+	ordering_fields = ('name', 'date', 'amount', 'currency', 'category')
+	ordering = ('-date',)
 
 	def get_queryset(self):
 		current_user = self.request.user

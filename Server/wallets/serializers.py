@@ -7,11 +7,17 @@ class WalletSerializer(serializers.ModelSerializer):
 		fields = ('pk', 'user', 'balance', 'currency', 'name')
 		read_only_fields = ('pk', 'user')
 
+class WalletUpdateSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = models.Wallet
+		fields = ('pk', 'user', 'balance', 'currency', 'name')
+		read_only_fields = ('pk', 'user', 'currency')
+
 class TransactionSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = models.Transaction
 		fields = ('pk', 'wallet', 'name', 'date', 'amount', 'currency', 'category')
-		read_only_fields = ('pk', )
+		read_only_fields = ('pk',)
 
 	def validate_wallet(self, value):
 		current_user = self.context['request'].user
