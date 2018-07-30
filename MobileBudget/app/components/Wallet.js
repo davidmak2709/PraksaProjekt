@@ -150,7 +150,7 @@ class Wallet extends Component {
 							<Text h4>{this.state.name}</Text>
 						</View>
 						<View style={styles.iconsLayout}>
-							<Icon color="green" name="search" size={30}  onPress = {this._goToDetailsPage.bind(this)}/>
+							<Icon color="green" name="list" size={30}  onPress = {this._goToDetailsPage.bind(this)}/>
 							<Divider style={{ backgroundColor: "transparent", width: 20 }} />
 							<Icon
 								color="green"
@@ -387,9 +387,9 @@ class Wallet extends Component {
 const styles = StyleSheet.create({
 	main: {
 
-		width: width * 0.85,
+		width: width * 0.9,
 		margin: 10,
-		backgroundColor: "transparent",
+		backgroundColor: "white",
 		borderColor: "green",
 		borderWidth: 1
 	},
@@ -398,7 +398,7 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 		height: height * 0.3 * 0.2,
-		padding: 10
+		padding: 10,
 	},
 	iconsLayout: {
 		flexDirection: "row",

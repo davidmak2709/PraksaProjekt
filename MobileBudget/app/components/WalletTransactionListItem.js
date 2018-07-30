@@ -1,14 +1,22 @@
 import React, { Component } from "react";
-import { Alert, Image, TouchableOpacity, StyleSheet, View } from "react-native";
-import { Text } from "react-native-elements";
-import { width } from "../constants";
+import {
+	Alert,
+	Image,
+	TouchableOpacity,
+	StyleSheet,
+	View,
+	Modal
+} from "react-native";
+import { Text, Icon, Divider } from "react-native-elements";
+import { width, height } from "../constants";
 import { ICONS } from "../images";
 
 class WalletTransactionsListItem extends React.Component {
 	constructor() {
 		super();
 		this.state = {
-			visible: true
+			visible: true,
+			transactionDialog: false
 		};
 	}
 
@@ -18,6 +26,7 @@ class WalletTransactionsListItem extends React.Component {
 			this.props.item.pk +
 			"/";
 
+		this.setState({transactionDialog: false});
 		fetch(url, {
 			method: "DELETE",
 			headers: {
@@ -44,50 +53,52 @@ class WalletTransactionsListItem extends React.Component {
 
 		if (this.state.visible) {
 			return (
-				<TouchableOpacity
-					activeOpacity={0.5}
-					style={styles.listItemContainer}
-					onLongPress={() =>
-						Alert.alert(
-							"Delete " + this.props.item.name + " transaction",
-							"Are you sure?",
-							[
-								{ text: "No", style: "cancel" },
-								{ text: "Yes", onPress: this._deleteTransaction.bind(this) }
-							],
-							{ cancelable: false }
-						)
-					}
-				>
-					<View style={styles.container}>
-						<View style={styles.header}>
-							<View style={{ width: width * 0.5 }}>
-								<Text h4 style={{ flexWrap: "wrap", color: "green" }}>
-									{this.props.item.name}
-								</Text>
+					<TouchableOpacity
+						activeOpacity={0.5}
+						style={styles.listItemContainer}
+						onLongPress={() => 	Alert.alert(
+								"Delete " + this.props.name + " transaction",
+								"Are you sure?",
+								[
+									{ text: "No", style: "cancel" },
+									{ text: "Yes", onPress: this._deleteTransaction.bind(this) }
+								],
+								{ cancelable: true }
+							)}
+					>
+						<View style={styles.container}>
+							<View style={styles.header}>
+								<View style={{ width: width * 0.5 }}>
+									<Text h4 style={{ flexWrap: "wrap", color: "green" }}>
+										{this.props.item.name}
+									</Text>
+								</View>
+								<Text style={{ margin: 5 }}>{this.props.item.date}</Text>
 							</View>
-							<Text style={{ margin: 5 }}>{this.props.item.date}</Text>
-						</View>
-						<View style={styles.content}>
-							<Image
-								style={styles.image}
-								source={ICONS[this.props.item.category]}
-							/>
-							<View>
-								<View
-									style={{ justifyContent: "flex-end", alignItems: "flex-end" }}
-								>
-									<Text h2 style={{ color: color }}>
-										{parseFloat(amount).toFixed(2)}
-									</Text>
-									<Text h4 style={{ color: "rgb(45, 185, 45)" }}>
-										{this.props.item.currency}
-									</Text>
+							<View style={styles.content}>
+								<Image
+									style={styles.image}
+									source={ICONS[this.props.item.category]}
+								/>
+								<View>
+									<View
+										style={{
+											justifyContent: "flex-end",
+											alignItems: "flex-end"
+										}}
+									>
+										<Text h2 style={{ color: color }}>
+											{parseFloat(amount).toFixed(2)}
+										</Text>
+										<Text h4 style={{ color: "rgb(45, 185, 45)" }}>
+											{this.props.item.currency}
+										</Text>
+									</View>
 								</View>
 							</View>
 						</View>
-					</View>
-				</TouchableOpacity>
+					</TouchableOpacity>
+
 			);
 		} else {
 			return null;

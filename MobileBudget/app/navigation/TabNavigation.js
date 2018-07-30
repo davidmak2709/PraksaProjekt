@@ -4,7 +4,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { createBottomTabNavigator } from "react-navigation";
 
 import HomeTab from "../fragments/HomeTab";
-import SettingsTab from "../fragments/SettingsTab";
+import TransactionsTab from "../fragments/TransactionsTab";
 import UserTab from "../fragments/UserTab";
 import WalletTab from "../fragments/WalletsTab";
 
@@ -13,7 +13,7 @@ const { height, width } = Dimensions.get("window");
 const navTab = createBottomTabNavigator(
 	{
 		Home: HomeTab,
-		Status: SettingsTab,
+		Transactions: TransactionsTab,
 		Wallets: WalletTab,
 		User: UserTab
 	},
@@ -24,7 +24,7 @@ const navTab = createBottomTabNavigator(
 				let iconName;
 				if (routeName === "Home") {
 					iconName = `ios-home${focused ? "" : "-outline"}`;
-				} else if (routeName === "Status") {
+				} else if (routeName === "Transactions") {
 					iconName = `ios-barcode${focused ? "" : "-outline"}`;
 				} else if (routeName === "User") {
 					iconName = `ios-person${focused ? "" : "-outline"}`;

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Text } from "react-native-elements";
 import { AsyncStorage, FlatList, View, StyleSheet } from "react-native";
 import WalletTransactionsListItem from "../../components/WalletTransactionListItem";
+import LoadingDataDialog from "../../components/LoadingDataDialog";
 import { withNavigation } from "react-navigation";
 
 class WalletTransactions extends React.Component {
@@ -65,10 +66,12 @@ class WalletTransactions extends React.Component {
 		return <WalletTransactionsListItem item={item} token={userToken} />;
 	};
 
+
+
 	render() {
 		let view;
 		if (this.state.isLoading) {
-			return <Text>Loading...</Text>;
+			return <LoadingDataDialog />;
 		} else {
 			return (
 				<FlatList
@@ -80,7 +83,7 @@ class WalletTransactions extends React.Component {
 					data={this.state.data}
 					renderItem={this._renderItem}
 					onEndReached={this._getOlderData.bind(this)}
-					onEndTreshold={5}
+					onEndTreshold={6}
 				/>
 			);
 		}

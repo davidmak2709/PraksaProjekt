@@ -81,11 +81,11 @@ const styles = StyleSheet.create({
 	TouchableOpacityStyle: {
 		backgroundColor: "green",
 		position: "absolute",
-		width: 50,
-		height: 50,
+		width: 55,
+		height: 55,
 		alignItems: "center",
 		justifyContent: "center",
-		borderRadius: 25,
+		borderRadius: 27,
 		right: 30,
 		bottom: 30
 	}
