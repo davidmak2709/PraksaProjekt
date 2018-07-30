@@ -17,7 +17,8 @@ constructor(props){
   addform:false,
   wallets:[],
   length:0,
-  walletid:35,
+  walletid:39,
+  renderwallets:false,
   };
 this.handleChange = this.handleChange.bind(this);
 this.handleSubmit = this.handleSubmit.bind(this);
@@ -35,9 +36,11 @@ this.handleSubmit = this.handleSubmit.bind(this);
     instance.get('/wallets/ ')
      .then(function (response) {
        //dohvacanje svih walleta
-        console.log(response + " " + response.data.length);
+        console.log(response);
         self.setState({length:response.data.length});
         self.setState({wallets:response.data});
+        self.setState({renderwallets:true});
+        console.log(self.state.wallets);
 
       })
       .catch(function (error) {
@@ -57,7 +60,7 @@ handleSubmit(event) {
        });
 
   instance.post('/wallets/transactions/create/',{
-    wallet: 35 ,
+    wallet: 39 ,
     name: this.state.name,
     amount: this.state.value,
     currency: this.state.currency,
@@ -65,7 +68,7 @@ handleSubmit(event) {
   })
    .then(function (response) {
       //dohvacanje tokena i spremanje u session
-      console.log(response.data + "Transaction completed successfuli");
+      console.log(response.data + "Transaction completed successfuly");
     })
     .catch(function (error) {
       console.log(error);
@@ -109,13 +112,13 @@ renderaddform(){
 
 renderwallet(){
     //var self =  this;
-    var wallets = [];
-    wallets.push(
-      <p>aa</p>
+    var wallets = this.state.wallets;
 
-    )
-    //// TODO: dropdown walleta
-    return wallets;
+    return (
+       <div>
+           {wallets.map(wallet => <div> {wallet.pk} </div>)}
+       </div>
+   );
 }
 
 render() {
