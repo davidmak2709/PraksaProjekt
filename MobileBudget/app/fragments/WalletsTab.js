@@ -61,7 +61,7 @@ class WalletTab extends React.Component {
 					extraData={this.props.wallets}
 					renderItem={this._renderItem}
 					contentContainerStyle={{
-						paddingBottom: height * 0.2,
+						paddingBottom: 20,
 						alignItems: "center"
 					}}
 				/>

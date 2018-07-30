@@ -173,7 +173,6 @@ class TransactionScreen extends React.Component {
 			amount: amount,
 			currency: currency
 		});
-		console.log(currency);
 	};
 
 	render() {
@@ -218,7 +217,7 @@ class TransactionScreen extends React.Component {
 						blurOnSubmit={false}
 						returnKeyType="next"
 						onChangeText={this._setTransactionName.bind(this)}
-						value={isNaN(this.state.name) ? null : this.state.name.toString() }
+						value={this.state.name.toString() }
 					/>
 
 					<FormInput

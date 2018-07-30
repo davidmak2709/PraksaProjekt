@@ -28,12 +28,13 @@ class Wallet extends Component {
 		this.state = {
 			visible: true,
 			editWallet: false,
-			name: this.props.name,
-			balance: this.props.balance,
 			nameBorderColor: "green",
-			balanceBorderColor: "green"
+			balanceBorderColor: "green",
+			balance: this.props.balance,
+			name: this.props.name
 		};
 	}
+
 
 	_deleteWallet() {
 		let url = "http://46.101.226.120:8000/api/wallets/" + this.props.pk + "/";
@@ -134,9 +135,13 @@ class Wallet extends Component {
 		this.props.navigation.navigate("WalletTransactions", {pk :  this.props.pk});
 	}
 
+	_editWallet = () => {
+		this.setState({ editWallet: !this.state.editWallet, visible: !this.state.visible })
+	}
+
 	render() {
 		let color = "darkseagreen";
-		let state = this.state.balance;
+	 	let state = this.props.balance;
 		if (state < 0) {
 			color = "darkred";
 		}
@@ -147,7 +152,7 @@ class Wallet extends Component {
 						<View
 							style={{ flexDirection: "column", flex: 1, flexWrap: "wrap" }}
 						>
-							<Text h4>{this.state.name}</Text>
+							<Text h4>{this.props.name}</Text>
 						</View>
 						<View style={styles.iconsLayout}>
 							<Icon color="green" name="list" size={30}  onPress = {this._goToDetailsPage.bind(this)}/>
@@ -156,9 +161,7 @@ class Wallet extends Component {
 								color="green"
 								name="edit"
 								size={30}
-								onPress={() =>
-									this.setState({ editWallet: true, visible: false })
-								}
+								onPress={this._editWallet.bind(this)}
 							/>
 							<Divider style={{ backgroundColor: "transparent", width: 20 }} />
 							<Icon
@@ -207,9 +210,7 @@ class Wallet extends Component {
 								color="red"
 								name="close"
 								size={30}
-								onPress={() =>
-									this.setState({ editWallet: false, visible: true })
-								}
+								onPress={this._editWallet.bind(this)}
 							/>
 						</View>
 					</View>
@@ -224,7 +225,7 @@ class Wallet extends Component {
 							underlineColorAndroid="transparent"
 							selectionColor="orangered"
 							blurOnSubmit={false}
-							onChangeText={name => this.setState({ name: name })}
+							onChangeText={name => this.setState({name: name})}
 							returnKeyType="next"
 							ref={nameRef => (this.nameRef = nameRef)}
 							onSubmitEditing={() => this.balanceRef.focus()}
@@ -243,7 +244,7 @@ class Wallet extends Component {
 							selectionColor="orangered"
 							blurOnSubmit={false}
 							onSubmitEditing={() => Keyboard.dismiss()}
-							onChangeText={balance => this.setState({ balance: balance })}
+							onChangeText={balance => this.setState({balance: balance})}
 							returnKeyType="done"
 							ref={balanceRef => (this.balanceRef = balanceRef)}
 							value={this.state.balance.toString()}

@@ -86,11 +86,11 @@ export default class TransactionsTab extends React.Component {
 			return (<LoadingDataDialog />);
 		} else {
 			return (
-				<View>
+				<View  style={{flex : 1}}>
 					<FlatList
 						contentContainerStyle={{
 							flexDirection: "column",
-							justifyContent: "center"
+							justifyContent: "center",
 						}}
 						keyExtractor={this._keyExtractor}
 						data={this.state.data}
