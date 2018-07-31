@@ -27,9 +27,8 @@ class WalletTransactions extends React.Component {
 	};
 
 	_getWalletTransactions = () => {
-		console.log(this.state.currentPage);
 		fetch(
-			"http://46.101.226.120:8000/api/wallets/transactions/?page="+this.state.currentPage+"&wallet="+this.props.navigation.getParam("pk"),
+			"http://46.101.226.120:8000/api/wallets/transactions/?page="+this.state.currentPage+"&ordering=date&wallet="+this.props.navigation.getParam("pk"),
 			{
 				method: "GET",
 				headers: {
@@ -45,7 +44,6 @@ class WalletTransactions extends React.Component {
 					isLoading: false,
 					next: responseJson.next
 				});
-				console.log(this.state.next);
 			})
 			.catch(error => {
 				console.error(error);

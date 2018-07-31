@@ -41,10 +41,9 @@ export default class TransactionsTab extends React.Component {
 	};
 
 	_getWalletTransactions = () => {
-		console.log(this.state.currentPage);
 		fetch(
 			"http://46.101.226.120:8000/api/wallets/transactions/?page=" +
-				this.state.currentPage,
+				this.state.currentPage +"&ordering=date",
 			{
 				method: "GET",
 				headers: {
@@ -69,16 +68,35 @@ export default class TransactionsTab extends React.Component {
 
 	_getOlderData = () => {
 		if (this.state.next != null) {
-			this.setState({ currentPage: this.state.currentPage + 1 }, () => {
+			this.setState({ currentPage: this.state.currentPage + 1}, () => {
 				this._getWalletTransactions();
 			});
 		}
 	};
 
+	_getUpdatedData = () => {
+		this.setState({ currentPage: 1, data: []}, () => {
+			this._getWalletTransactions();
+		});
+	}
+
 	_keyExtractor = (item, index) => item.pk.toString();
 
 	_renderItem = ({ item }) => {
 		return <WalletTransactionsListItem item={item} token={userToken} />;
+	};
+
+	_renderEmptyList = () =>{
+			return (
+				<View style={{height:height-150,justifyContent: "center",alignItems: "center"}}>
+					<View style={{width: width*0.7,justifyContent: "center",alignItems: "center"}}>
+						<Text style={{fontSize: 18, color: "green"}}>You do not have any recorded </Text>
+						<Text style={{fontSize: 18, color: "green"}}>transaction, yet.</Text>
+						<Text>Hit the button and create your </Text>
+						<Text>first transaction.</Text>
+					</View>
+				</View>
+			);
 	};
 
 	render() {
@@ -97,10 +115,15 @@ export default class TransactionsTab extends React.Component {
 						renderItem={this._renderItem}
 						onEndReached={this._getOlderData.bind(this)}
 						onEndTreshold={6}
+						ListEmptyComponent={this._renderEmptyList}
 					/>
 					<TouchableOpacity
 						activeOpacity={0.5}
-						onPress={() => this.props.navigation.navigate("Transaction")}
+						onPress={() =>
+							this.props.navigation.navigate("Transaction",{
+								updateData: this._getUpdatedData.bind(this)
+							})
+					}
 						style={styles.TouchableOpacityStyle}
 					>
 						<Icon color="white" name="add" size={30} />

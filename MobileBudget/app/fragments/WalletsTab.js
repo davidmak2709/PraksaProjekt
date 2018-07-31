@@ -49,6 +49,17 @@ class WalletTab extends React.Component {
 		);
 	};
 
+	_renderEmptyList = () =>{
+			return (
+				<View style={{height:height-150,justifyContent: "center",alignItems: "center"}}>
+					<View style={{width: width*0.7,justifyContent: "center",alignItems: "center"}}>
+						<Text style={{fontSize: 18, color: "green"}}>You do not have a wallet, yet. </Text>
+						<Text>Hit the button and create your </Text>
+						<Text>first wallet.</Text>
+					</View>
+				</View>
+			);
+	};
 
 
 
@@ -64,6 +75,7 @@ class WalletTab extends React.Component {
 						paddingBottom: 20,
 						alignItems: "center"
 					}}
+					ListEmptyComponent={this._renderEmptyList}
 				/>
 				<TouchableOpacity
 					activeOpacity={0.5}

@@ -303,7 +303,6 @@ const styles = StyleSheet.create({
 
 Wallet.propTypes = {
 	name: PropTypes.string.isRequired,
-	balance: PropTypes.number.isRequired,
 	currency: PropTypes.string.isRequired
 };
 
