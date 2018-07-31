@@ -10,7 +10,8 @@ import {
 	StatusBar,
 	TouchableOpacity,
 	Picker,
-	ScrollView
+	ScrollView,
+	BackHandler
 } from "react-native";
 import {
 	CheckBox,
@@ -40,7 +41,7 @@ class TransactionScreen extends React.Component {
 			wallet: "",
 			category: "paycheck",
 			name: "",
-			amount: 0
+			amount: "zero"
 		};
 
 		this._getCategories();
@@ -75,7 +76,7 @@ class TransactionScreen extends React.Component {
 	};
 
 	_newTransaction = () => {
-		let amount = this.state.amount;
+		let amount = parseFloat(this.state.amount.toString().replace(',','.'));
 		if (this.state.transactionType == false) {
 			amount = amount * -1;
 		}
@@ -157,7 +158,7 @@ class TransactionScreen extends React.Component {
 	};
 
 	_setTransactionAmount = amount => {
-		this.setState({ amount: parseFloat(amount) });
+		this.setState({ amount: amount});
 	};
 
 	_goToCameraScanPage = () => {
@@ -214,8 +215,8 @@ class TransactionScreen extends React.Component {
 						containerStyle={[styles.input, { borderBottomColor: "green" }]}
 						inputStyle={{ width: width * 0.8 * 0.95 }}
 						underlineColorAndroid="transparent"
-						blurOnSubmit={false}
-						returnKeyType="next"
+						blurOnSubmit={true}
+						returnKeyType="done"
 						onChangeText={this._setTransactionName.bind(this)}
 						value={this.state.name.toString() }
 					/>
@@ -225,10 +226,11 @@ class TransactionScreen extends React.Component {
 						containerStyle={[styles.input, { borderBottomColor: "green" }]}
 						inputStyle={{ width: width * 0.8 * 0.95 }}
 						underlineColorAndroid="transparent"
-						blurOnSubmit={false}
-						returnKeyType="next"
+						blurOnSubmit={true}
+						returnKeyType="done"
+						keyboardType="numeric"
 						onChangeText={this._setTransactionAmount.bind(this)}
-						value={isNaN(this.state.amount) ? null : this.state.amount.toString() }
+						value={this.state.amount === "zero"? null : this.state.amount.toString()}
 					/>
 					{/*odabir valute*/}
 					<View

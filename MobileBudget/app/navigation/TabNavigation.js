@@ -45,7 +45,8 @@ const navTab = createBottomTabNavigator(
 				marginBottom: 2,
 				fontSize: 12
 			}
-		}
+		},
+		backBehavior: 'none'
 	}
 );
 

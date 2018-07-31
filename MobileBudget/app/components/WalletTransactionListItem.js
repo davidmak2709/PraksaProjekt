@@ -10,6 +10,8 @@ import {
 import { Text, Icon, Divider } from "react-native-elements";
 import { width, height } from "../constants";
 import { ICONS } from "../images";
+import { connect } from "react-redux";
+import { updateWallet } from "../redux/actions";
 
 class WalletTransactionsListItem extends React.Component {
 	constructor() {
@@ -34,10 +36,33 @@ class WalletTransactionsListItem extends React.Component {
 				Authorization: "Token " + this.props.token
 			}
 		})
-			.then(response => {
-				if (response.status == 204) {
-					this.setState({ visible: false });
-				}
+			.then(response =>{
+					if(response.status == 204){
+						this.setState({visible: false})
+						this._getUpdatedStatus();
+					}
+			}).catch(error => {
+				console.error(error);
+			});
+	};
+
+	_getUpdatedStatus = () => {
+		fetch("http://46.101.226.120:8000/api/wallets/"+ this.props.item.wallet +"/", {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: "Token " + userToken
+			}
+		})
+			.then(response =>response.json())
+			.then(data => {
+
+				this.props.updateWallet({
+						pk: data.pk,
+						balance: parseFloat(data.balance),
+						currency: data.currency,
+						name: data.name
+				});
 			})
 			.catch(error => {
 				console.error(error);
@@ -57,7 +82,7 @@ class WalletTransactionsListItem extends React.Component {
 						activeOpacity={0.5}
 						style={styles.listItemContainer}
 						onLongPress={() => 	Alert.alert(
-								"Delete " + this.props.name + " transaction",
+								"Delete " + this.props.item.name + " transaction",
 								"Are you sure?",
 								[
 									{ text: "No", style: "cancel" },
@@ -152,4 +177,9 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default WalletTransactionsListItem;
+function mapStateToProps(state) {
+	return {
+		wallets: state.wallets
+	};
+}
+export default connect(mapStateToProps,{ updateWallet })(WalletTransactionsListItem);

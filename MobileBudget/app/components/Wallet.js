@@ -65,22 +65,6 @@ class Wallet extends Component {
 		let nameError = false;
 		let balanceError = false;
 
-		let currency = "";
-
-		if (this.state.kuna) {
-			currency = "HRK";
-		} else if (this.state.dollar) {
-			currency = "USD";
-		} else if (this.state.euro) {
-			currency = "EUR";
-		} else if (this.state.pound) {
-			currency = "GBP";
-		} else if (this.state.franc) {
-			currency = "CHF";
-		} else {
-			currency = this.props.currency;
-		}
-
 		if (name == "" || name.lenght < 5 || name.lenght > 50) {
 			nameError = true;
 			this.setState({ nameBorderColor: "red" });
@@ -108,7 +92,7 @@ class Wallet extends Component {
 				},
 				body: JSON.stringify({
 					balance: balance,
-					currency: currency,
+					currency: this.props.currency,
 					name: name
 				})
 			})
@@ -117,8 +101,8 @@ class Wallet extends Component {
 						Alert.alert("Updated. :)");
 						this.props.updateWallet( {
 							pk: this.props.pk,
-							balance: parseFloat(balance),
-							currency: currency,
+							balance: balance,
+							currency: this.props.currency,
 							name: name
 					});
 					} else {
@@ -147,7 +131,7 @@ class Wallet extends Component {
 		}
 		if (this.state.visible) {
 			return (
-				<View style={[styles.main, {height: height * 0.4} ]}>
+				<View style={[styles.main, {height: 200} ]}>
 					<View style={styles.header}>
 						<View
 							style={{ flexDirection: "column", flex: 1, flexWrap: "wrap" }}
@@ -193,12 +177,12 @@ class Wallet extends Component {
 			);
 		} else if (this.state.editWallet) {
 			return (
-				<View style={[styles.main, {height: height * 0.5} ]}>
+				<View style={[styles.main, {height: 250} ]}>
 					<View style={styles.header}>
 						<View
 							style={{ flexDirection: "column", flex: 1, flexWrap: "wrap" }}
 						>
-							<Text h4>Edit your wallet</Text>
+							<Text h4>Edit {this.props.name}</Text>
 						</View>
 						<View
 							style={[
@@ -215,6 +199,7 @@ class Wallet extends Component {
 						</View>
 					</View>
 					<View>
+					<Text style={{marginLeft: 10, marginTop: 10, color:"green"}}>Name:</Text>
 						<FormInput
 							placeholder="Insert wallet name"
 							containerStyle={[
@@ -231,7 +216,7 @@ class Wallet extends Component {
 							onSubmitEditing={() => this.balanceRef.focus()}
 							value={this.state.name}
 						/>
-
+						<Text style={{marginLeft: 10, marginTop: 10, color:"green"}}>Balance:</Text>
 						<FormInput
 							placeholder="Insert account balance"
 							containerStyle={[
@@ -249,123 +234,13 @@ class Wallet extends Component {
 							ref={balanceRef => (this.balanceRef = balanceRef)}
 							value={this.state.balance.toString()}
 						/>
-
-						<View style={styles.currencySelectorContainer}>
-							<CheckBox
-								title="EUR"
-								center
-								iconRight={false}
-								checkedIcon="euro"
-								uncheckedIcon="euro"
-								checkedColor="green"
-								uncheckedColor="red"
-								checked={this.state.euro}
-								containerStyle={styles.currencyOptionContainer}
-								onPress={() =>
-									this.setState({
-										euro: true,
-										dollar: false,
-										kuna: false,
-										pound: false,
-										franc: false
-									})
-								}
-							/>
-
-							<CheckBox
-								title="USD"
-								center
-								checkedIcon="dollar"
-								uncheckedIcon="dollar"
-								containerStyle={styles.currencyOptionContainer}
-								checkedColor="green"
-								uncheckedColor="red"
-								checked={this.state.dollar}
-								onPress={() =>
-									this.setState({
-										euro: false,
-										dollar: true,
-										kuna: false,
-										pound: false,
-										franc: false
-									})
-								}
-							/>
-
-							<CheckBox
-								center
-								title="HRK"
-								checkedIcon="money"
-								uncheckedIcon="money"
-								checked={this.state.kuna}
-								checkedColor="green"
-								uncheckedColor="red"
-								containerStyle={styles.currencyOptionContainer}
-								onPress={() =>
-									this.setState({
-										euro: false,
-										dollar: false,
-										kuna: true,
-										pound: false,
-										franc: false
-									})
-								}
-							/>
-						</View>
-						<View
-							style={{
-								flexDirection: "row",
-								justifyContent: "center",
-
-							}}
-						>
-							<CheckBox
-								title="CHF"
-								center
-								checkedIcon="money"
-								uncheckedIcon="money"
-								checkedColor="green"
-								uncheckedColor="red"
-								checked={this.state.franc}
-								containerStyle={styles.currencyOptionContainer}
-								onPress={() =>
-									this.setState({
-										euro: false,
-										dollar: false,
-										kuna: false,
-										pound: false,
-										franc: true
-									})
-								}
-							/>
-
-							<CheckBox
-								center
-								title="GBP"
-								checkedIcon="gbp"
-								uncheckedIcon="gbp"
-								checked={this.state.pound}
-								checkedColor="green"
-								uncheckedColor="red"
-								containerStyle={styles.currencyOptionContainer}
-								onPress={() =>
-									this.setState({
-										euro: false,
-										dollar: false,
-										kuna: false,
-										pound: true,
-										franc: false
-									})
-								}
-							/>
-						</View>
 						<View
 							style={[
 								styles.iconsLayout,
 								{
 									justifyContent: "center",
 									alignItems: "center",
-									marginRight: 10
+									margin: 10
 								}
 							]}
 						>
