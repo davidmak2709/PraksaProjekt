@@ -116,7 +116,9 @@ renderwallet(){
 
     return (
        <div>
-           {wallets.map(wallet => <div> {wallet.pk} </div>)}
+       //// TODO: formatirati izgled i podatke
+       {wallets.map(wallet => <div> {wallet.pk} </div>)}
+       
        </div>
    );
 }
