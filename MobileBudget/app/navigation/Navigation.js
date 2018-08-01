@@ -7,6 +7,7 @@ import SignupScreen from "../screens/Signup/SignupScreen";
 import TransactionScreen from "../screens/Transaction/TransactionScreen";
 import CameraScreen from "../screens/Camera/CameraScreen";
 import WalletTransactions from "../screens/WalletTransactions/WalletTransactions";
+import FilterScreen from "../screens/Filter/FilterScreen";
 import NewWalletDialog from "../components/NewWalletDialog";
 
 import navTab from "./TabNavigation";
@@ -43,7 +44,12 @@ const AppStack = createStackNavigator({
 			title: `Details`,
 		})
 	},
-
+	Filter: {
+		screen: FilterScreen,
+		navigationOptions: ({ navigation }) => ({
+			title: `Filter`,
+		})
+	},
 
 });
 

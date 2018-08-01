@@ -43,7 +43,7 @@ export default class TransactionsTab extends React.Component {
 	_getWalletTransactions = () => {
 		fetch(
 			"http://46.101.226.120:8000/api/wallets/transactions/?page=" +
-				this.state.currentPage +"&ordering=date",
+				this.state.currentPage +"&ordering=-date",
 			{
 				method: "GET",
 				headers: {
