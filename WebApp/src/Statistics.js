@@ -4,6 +4,9 @@ import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import ReactFC from 'react-fusioncharts';
 import axios from 'axios';
+import {BootstrapTable,
+       TableHeaderColumn} from 'react-bootstrap-table';
+
 var dataGraph2;
 
 
@@ -47,21 +50,74 @@ function getData(){
  });
 }
 
-
-
-
 class Statistics extends Component {
+  constructor(props){
+    super(props);
+    this.state={
+    token:window.sessionStorage.getItem("key"),
+    transactions: [],
+    };
+
+   }
+
+   rendertransactions(){
+       var transactions = this.state.transactions;
+
+       return (
+          <div>
+        <BootstrapTable data={transactions}>
+          <TableHeaderColumn isKey dataField='pk'>
+            ID
+          </TableHeaderColumn>
+          <TableHeaderColumn dataField='name'>
+            Name
+          </TableHeaderColumn>
+          <TableHeaderColumn dataField='date'>
+            Date
+          </TableHeaderColumn>
+          <TableHeaderColumn dataField='amount'>
+            Amount
+          </TableHeaderColumn>
+          <TableHeaderColumn dataField='currency'>
+            Currency
+          </TableHeaderColumn>
+
+        </BootstrapTable>
+      </div>
+    
+      );
+   }
+
   render() {
     return (
+      <div>
       <div id="chart-container"></div>
+      {this.rendertransactions()}
+      </div>
     );
   }
 
-
-
-
 componentDidMount() {
   getData();
+  var self = this;
+  var instance = axios.create({
+           baseURL: "http://46.101.226.120:8000/api/",
+           timeout: 4000,
+           headers: {'Authorization': "Token "+this.state.token}
+
+       });
+  console.log(this.state.token);
+  instance.get('/wallets/transactions/ ')
+   .then(function (response) {
+     //dohvacanje svih walleta
+      console.log(response);
+      self.setState({transactions:response.data.results});
+      console.log(self.state.transactions);
+
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 
 }
 }
