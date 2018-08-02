@@ -16,7 +16,7 @@ class WalletUpdateSerializer(serializers.ModelSerializer):
 class TransactionSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = models.Transaction
-		fields = ('pk', 'wallet', 'name', 'date', 'amount', 'currency', 'category')
+		fields = ('pk', 'wallet', 'name', 'date', 'amount', 'currency', 'category', 'recurring')
 		read_only_fields = ('pk',)
 
 	def validate_wallet(self, value):
@@ -28,3 +28,9 @@ class TransactionSerializer(serializers.ModelSerializer):
 	def validate_date(self, value):
 		pass
 		# TODO: check date?
+
+class TransactionUpdateSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = models.Transaction
+		fields = ('pk', 'wallet', 'name', 'date', 'amount', 'currency', 'category', 'recurring')
+		read_only_fields = ('pk', 'wallet', 'amount', 'currency')

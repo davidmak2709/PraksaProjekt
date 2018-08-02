@@ -60,19 +60,21 @@ class Transaction(models.Model):
 	amount = models.FloatField()
 	currency = models.CharField(max_length=5, choices=CURRENCY_CHOICES)
 	category = models.CharField(max_length=20, choices=TRANSACTION_CHOICES)
+	recurring = models.BooleanField(default=False)
 
 	def __str__(self):
 		return 'Transaction: {} {} {} {}'.format(self.wallet, self.category, self.amount, self.currency)
 
 	def save(self, *args, **kwargs):
-		wallet = Wallet.objects.get(pk=self.wallet.pk)
-		if wallet.currency!=self.currency:
-			c = CurrencyConverter()
-			converted_amount = c.convert(self.amount, self.currency, wallet.currency)
-		else:
-			converted_amount = self.amount
-		wallet.balance += converted_amount
-		wallet.save()
+		if not Transaction.objects.filter(pk=self.pk).exists():
+			wallet = Wallet.objects.get(pk=self.wallet.pk)
+			if wallet.currency!=self.currency:
+				c = CurrencyConverter()
+				converted_amount = c.convert(self.amount, self.currency, wallet.currency)
+			else:
+				converted_amount = self.amount
+			wallet.balance += converted_amount
+			wallet.save()
 		models.Model.save(self, *args, **kwargs)
 
 	def delete(self, *args, **kwargs):

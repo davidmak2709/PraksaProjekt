@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_auth.registration',
     'corsheaders',
     'django_filters',
+    'django_cron',
     'restapi',
     'users',
     'wallets',
@@ -162,3 +163,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     )
 }
+
+CRON_CLASSES = [
+    'finances.cron.RecurringTransactionCronJob',
+]
