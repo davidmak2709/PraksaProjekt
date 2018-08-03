@@ -11,4 +11,4 @@ class TransactionFilter(filters.FilterSet):
 
     class Meta:
         model = Transaction
-        fields = ['date', 'category', 'wallet', 'name']
+        fields = ['date', 'category', 'wallet', 'name', 'recurring']
