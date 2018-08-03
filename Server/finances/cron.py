@@ -20,4 +20,5 @@ class RecurringTransactionCronJob(CronJobBase):
                                           category=transaction.category,
                                           recurring=transaction.recurring)
             new_transaction.save()
-            print('Success')
+            print('Successfully added a copy of '+str(transaction.pk)+' on '+str(date.today()))
+        print('No recurring transactions on '+str(date.today()))
