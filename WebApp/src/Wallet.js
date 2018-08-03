@@ -20,6 +20,9 @@ constructor(props){
   };
 this.handleChange = this.handleChange.bind(this);
 this.handleSubmit = this.handleSubmit.bind(this);
+
+this.handleClick = this.handleClick.bind(this);
+
  }
 
   componentDidMount() {
@@ -67,6 +70,7 @@ handleSubmit(event) {
     .catch(function (error) {
       console.log(error);
     });
+    window.location.reload();
 
 }
 
@@ -101,6 +105,29 @@ renderaddform(){
     else return ;
 
 }
+handleClick = event => {
+
+    window.alert("zelite li izbrisati wallet s id-om:"+ event.target.value);
+
+    var instance = axios.create({
+             baseURL: "http://46.101.226.120:8000/api/wallets/",
+             timeout: 4000,
+             headers: {'Authorization': "Token "+this.state.token}
+
+         });
+
+    instance.delete(event.target.value+"/")
+     .then(function (response) {
+       //brisanje određenog walleta
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+      window.location.reload();
+    }
+
+
 renderwallet(){
     //var self =  this;
     var wallets = [];
@@ -115,6 +142,7 @@ renderwallet(){
           {obj.name}
           <label>balnace:</label>
           {obj.balance} {obj.currency}
+          <button type="button" class="btn btn-danger" value={obj.pk} onClick={this.handleClick}>X</button>
 
         </div>
       )

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-var Dropdown = require('react-simple-dropdown');
-var DropdownTrigger = Dropdown.DropdownTrigger;
-var DropdownContent = Dropdown.DropdownContent;
+
+import Dropdown from 'react-dropdown';
+
+var options = [];
 
 class Output extends Component {
 constructor(props){
@@ -19,6 +20,7 @@ constructor(props){
   length:0,
   walletid:39,
   renderwallets:false,
+  selectedOption: null,
   };
 this.handleChange = this.handleChange.bind(this);
 this.handleSubmit = this.handleSubmit.bind(this);
@@ -41,6 +43,15 @@ this.handleSubmit = this.handleSubmit.bind(this);
         self.setState({wallets:response.data});
         self.setState({renderwallets:true});
         console.log(self.state.wallets);
+        console.log(options);
+        for(var i = 0; i < self.state.wallets.length ; i++){
+            var obj = JSON.parse('{ "value": '+ self.state.wallets[i].pk + ', "label": "'+ self.state.wallets[i].name + '"}')
+            options.push(obj);
+
+
+
+        }
+
 
       })
       .catch(function (error) {
@@ -60,7 +71,7 @@ handleSubmit(event) {
        });
 
   instance.post('/wallets/transactions/create/',{
-    wallet: 39 ,
+    wallet: this.state.selectedOption.value,
     name: this.state.name,
     amount: this.state.value,
     currency: this.state.currency,
@@ -81,6 +92,11 @@ handleChange = event => {
   this.setState({
     [event.target.id]: event.target.value
   });
+}
+
+handleSelect = (selectedOption) => {
+  this.setState({ selectedOption });
+  console.log(`Option selected:`, selectedOption);
 }
 
 renderaddform(){
@@ -113,13 +129,13 @@ renderaddform(){
 renderwallet(){
     //var self =  this;
     var wallets = this.state.wallets;
-
+    //// TODO: formatirati izgled i podatke {wallets.map(wallet => <div> {wallet.name}  </div>)}
     return (
        <div>
-       //// TODO: formatirati izgled i podatke
-       {wallets.map(wallet => <div> {wallet.pk} </div>)}
-       
+       <Dropdown options={options} onChange={this.handleSelect}  placeholder="Select a wallet" />
        </div>
+
+
    );
 }
 

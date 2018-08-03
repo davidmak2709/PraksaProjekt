@@ -75,16 +75,22 @@ class Statistics extends Component {
           <TableHeaderColumn dataField='date'>
             Date
           </TableHeaderColumn>
+          <TableHeaderColumn dataField='category'>
+            Category
+          </TableHeaderColumn>
           <TableHeaderColumn dataField='amount'>
             Amount
           </TableHeaderColumn>
           <TableHeaderColumn dataField='currency'>
             Currency
           </TableHeaderColumn>
+          <TableHeaderColumn dataField='recurring'>
+            Recuring
+          </TableHeaderColumn>
 
         </BootstrapTable>
       </div>
-    
+
       );
    }
 

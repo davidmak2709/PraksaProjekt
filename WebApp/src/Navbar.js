@@ -8,6 +8,7 @@ import Wallet from './Wallet'
 import Output from './Output'
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import axios from 'axios';
+import example from './example'
 
 class Navbar extends Component{
   constructor(props){
@@ -72,7 +73,7 @@ class Navbar extends Component{
     			        <ul className="dropdown-menu">
     			          <li><a href="/output">Output</a></li>
     			          <li><a href="#">Izlazi</a></li>
-    			          <li><a href="#">Investicije</a></li>
+    			          <li><a href="/example">Investicije</a></li>
     			        </ul>
     			      </li>
                 <li><Link to="/wallet"><span> Wallet</span> </Link></li>
@@ -89,6 +90,7 @@ class Navbar extends Component{
           <Route path="/profile" component={Profile} />
           <Route path="/wallet" component={Wallet} />
           <Route path="/output" component={Output} />
+          <Route path="/example" component={example} />
 
 
     		</div>
