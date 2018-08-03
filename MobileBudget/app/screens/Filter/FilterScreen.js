@@ -71,6 +71,29 @@ export default class FilterScreen extends Component<Props> {
 			});
 	};
 
+	_setFilterUrl = () => {
+		let url = "&date_after="+ moment(this.state.fromDate, 'DD-MM-YYYY').format('YYYY-MM-DD');
+		url = url.concat("&date_before="+ moment(this.state.toDate, 'DD-MM-YYYY').format('YYYY-MM-DD'))
+
+		if(this.state.dateDesc){
+			url = url.concat("&ordering=-date");
+		} else {
+			url = url.concat("&ordering=date");
+		}
+
+		if(this.state.category != "all"){
+			url = url.concat("&category=" + this.state.category);
+		}
+
+		if(this.state.nameAsc){
+			url = url.concat("&ordering=name");
+		} else {
+			url = url.concat("&ordering=-name");
+		}
+		this.props.navigation.state.params.setFilter(url);
+		this.props.navigation.pop();
+	};
+
 	render() {
 		let categoriesArray = this.state.response;
 		let categories = [];
@@ -239,6 +262,7 @@ export default class FilterScreen extends Component<Props> {
 								borderRadius:10,
 								backgroundColor: "green"
 							}}
+							onPress = {this._setFilterUrl.bind(this)}
 						>
 							<Icon color="white" name="done" size={30} />
 							<Text style={{marginLeft: 5, color: "white", fontSize: 18}}>Confirm</Text>

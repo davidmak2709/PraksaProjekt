@@ -10,7 +10,9 @@ class WalletTransactions extends React.Component {
 	static navigationOptions = ({ navigation }) => {
 	return {
 		headerRight: (
-			<TouchableOpacity activeOpacity={0.5} onPress={() => navigation.navigate("Filter")}
+			<TouchableOpacity activeOpacity={0.5} onPress={() => navigation.navigate("Filter", {
+				 setFilter: navigation.getParam("setFilter")
+			})}
 				style={{flexDirection:"row",alignItems: "center", marginRight: 20}}>
 				<Icon color="green" name="filter-list" size={40} />
 			</TouchableOpacity>
@@ -24,13 +26,15 @@ class WalletTransactions extends React.Component {
 			isLoading: true,
 			currentPage: 1,
 			data: [],
-			next: ""
+			next: "",
+			filter: "&ordering=-date"
 		};
 		this._bootstrapAsync();
 	}
 
 	componentDidMount() {
 		this._getWalletTransactions();
+		this.props.navigation.setParams({ setFilter: this._setFilter.bind(this) });
 	}
 
 	_bootstrapAsync = async () => {
@@ -39,8 +43,9 @@ class WalletTransactions extends React.Component {
 
 //+this.props.navigation.getParam("pk")
 	_getWalletTransactions = () => {
-		fetch(
-			"http://46.101.226.120:8000/api/wallets/transactions/?page="+this.state.currentPage+"&ordering=-date&wallet="+this.props.navigation.getParam("pk"),
+		let url ="http://46.101.226.120:8000/api/wallets/transactions/?page="+this.state.currentPage+"&wallet="+this.props.navigation.getParam("pk")+this.state.filter
+		console.log(url);
+		fetch( url,
 			{
 				method: "GET",
 				headers: {
@@ -59,6 +64,12 @@ class WalletTransactions extends React.Component {
 			})
 			.catch(error => {
 				console.error(error);
+			});
+	};
+
+	_setFilter = (filter) =>{
+			this.setState({filter: filter,data: []},()=> {
+				this._getWalletTransactions();
 			});
 	};
 
