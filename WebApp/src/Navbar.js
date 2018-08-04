@@ -6,9 +6,33 @@ import Signup from './Signup'
 import Profile from './Profile'
 import Wallet from './Wallet'
 import Output from './Output'
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Redirect,
+  withRouter
+} from "react-router-dom";
 import axios from 'axios';
 import example from './example'
+
+const PrivateRoute = ({ component: Component, ...rest }) => (
+<Route
+  {...rest}
+  render={props =>
+    window.sessionStorage.getItem("key") ? (
+      <Component {...props} />
+    ) : (
+      <Redirect
+        to={{
+          pathname: "/login",
+          state: { from: props.location }
+        }}
+      />
+    )
+  }
+/>
+);
 
 class Navbar extends Component{
   constructor(props){
@@ -57,6 +81,8 @@ class Navbar extends Component{
     }
   }
 
+
+
   render(){
 
     return (
@@ -86,11 +112,11 @@ class Navbar extends Component{
           <Route exact path="/" component={Home}/>
           <Route path="/login" component={Login} />
           <Route path="/signup" component={Signup} />
-          <Route path="/statistics" component={Statistics} />
-          <Route path="/profile" component={Profile} />
-          <Route path="/wallet" component={Wallet} />
-          <Route path="/output" component={Output} />
-          <Route path="/example" component={example} />
+          <PrivateRoute path="/statistics" component={Statistics} />
+          <PrivateRoute path="/profile" component={Profile} />
+          <PrivateRoute path="/wallet" component={Wallet} />
+          <PrivateRoute path="/output" component={Output} />
+          <PrivateRoute path="/example" component={example} />
 
 
     		</div>

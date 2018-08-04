@@ -4,6 +4,8 @@ import axios from 'axios';
 import Dropdown from 'react-dropdown';
 
 var options = [];
+var optionscurr = [{ value: "HRK", label: "HRK"},
+                    { value: "EUR", label: "EUR"}];
 
 class Output extends Component {
 constructor(props){
@@ -21,6 +23,7 @@ constructor(props){
   walletid:39,
   renderwallets:false,
   selectedOption: null,
+  selectedOptioncurr: null,
   };
 this.handleChange = this.handleChange.bind(this);
 this.handleSubmit = this.handleSubmit.bind(this);
@@ -47,12 +50,7 @@ this.handleSubmit = this.handleSubmit.bind(this);
         for(var i = 0; i < self.state.wallets.length ; i++){
             var obj = JSON.parse('{ "value": '+ self.state.wallets[i].pk + ', "label": "'+ self.state.wallets[i].name + '"}')
             options.push(obj);
-
-
-
         }
-
-
       })
       .catch(function (error) {
         console.log(error);
@@ -98,6 +96,10 @@ handleSelect = (selectedOption) => {
   this.setState({ selectedOption });
   console.log(`Option selected:`, selectedOption);
 }
+handleSelectcurr = (selectedOption) => {
+  this.setState({ currency:selectedOption.value });
+  console.log(`Option selected:`, selectedOption);
+}
 
 renderaddform(){
   //// TODO: dropdown za kategorije i odabir datuma
@@ -114,10 +116,7 @@ renderaddform(){
             Amount:
             <input type="float" id="value" value={this.state.value} onChange={this.handleChange} />
           </label>
-          <label>
-            Currency:
-            <input type="text" id="currency" value={this.state.currency} onChange={this.handleChange} />
-          </label>
+          <Dropdown options={optionscurr} onChange={this.handleSelectcurr}  placeholder="Select a currency" />
           <label>
             Category:
             <input type="text" id="category" value={this.state.category} onChange={this.handleChange} />
