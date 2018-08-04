@@ -11,7 +11,8 @@ class WalletTransactions extends React.Component {
 	return {
 		headerRight: (
 			<TouchableOpacity activeOpacity={0.5} onPress={() => navigation.navigate("Filter", {
-				 setFilter: navigation.getParam("setFilter")
+				 setFilter: navigation.getParam("setFilter"),
+				 wallet: navigation.getParam("pk")
 			})}
 				style={{flexDirection:"row",alignItems: "center", marginRight: 20}}>
 				<Icon color="green" name="filter-list" size={40} />
@@ -72,6 +73,7 @@ class WalletTransactions extends React.Component {
 				this._getWalletTransactions();
 			});
 	};
+
 
 	_getOlderData = () => {
 		if (this.state.next != null) {

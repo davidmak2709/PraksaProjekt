@@ -11,12 +11,13 @@ import {
 	TouchableOpacity,
 	RefreshControl,
 	FlatList,
-  StatusBar
+	StatusBar
 } from "react-native";
 import { Icon, Button } from "react-native-elements";
 import WalletTransactionsListItem from "../components/WalletTransactionListItem";
 import LoadingDataDialog from "../components/LoadingDataDialog";
 import { height, width } from "../constants";
+import ActionButton from "react-native-action-button";
 
 export default class TransactionsTab extends React.Component {
 	static userToken;
@@ -27,14 +28,15 @@ export default class TransactionsTab extends React.Component {
 			isLoading: true,
 			currentPage: 1,
 			data: [],
-			next: ""
+			next: "",
+			filter: "&ordering=-date"
 		};
 		this._bootstrapAsync();
 	}
 
-  componentDidMount(){
-    this._getWalletTransactions();
-  }
+	componentDidMount() {
+		this._getWalletTransactions();
+	}
 
 	_bootstrapAsync = async () => {
 		userToken = await AsyncStorage.getItem("userToken");
@@ -43,7 +45,8 @@ export default class TransactionsTab extends React.Component {
 	_getWalletTransactions = () => {
 		fetch(
 			"http://46.101.226.120:8000/api/wallets/transactions/?page=" +
-				this.state.currentPage +"&ordering=-date",
+				this.state.currentPage +
+				this.state.filter,
 			{
 				method: "GET",
 				headers: {
@@ -59,7 +62,6 @@ export default class TransactionsTab extends React.Component {
 					isLoading: false,
 					next: responseJson.next
 				});
-				console.log(this.state.next);
 			})
 			.catch(error => {
 				console.error(error);
@@ -68,17 +70,29 @@ export default class TransactionsTab extends React.Component {
 
 	_getOlderData = () => {
 		if (this.state.next != null) {
-			this.setState({ currentPage: this.state.currentPage + 1}, () => {
+			this.setState({ currentPage: this.state.currentPage + 1 }, () => {
 				this._getWalletTransactions();
 			});
 		}
 	};
 
 	_getUpdatedData = () => {
-		this.setState({ currentPage: 1, data: []}, () => {
+		this.setState({ currentPage: 1, data: [] }, () => {
 			this._getWalletTransactions();
 		});
-	}
+	};
+
+	_setFilter = filter => {
+		this.setState({ isLoading: true,filter: filter, data: [] }, () => {
+			this._getWalletTransactions();
+		});
+	};
+
+	_resetFilter = () => {
+		this.setState({ isLoading: true,filter: "&ordering=-date", data: [] },() => {
+			this._getWalletTransactions();
+		});
+	};
 
 	_keyExtractor = (item, index) => item.pk.toString();
 
@@ -86,29 +100,49 @@ export default class TransactionsTab extends React.Component {
 		return <WalletTransactionsListItem item={item} token={userToken} />;
 	};
 
-	_renderEmptyList = () =>{
-			return (
-				<View style={{height:height-150,justifyContent: "center",alignItems: "center"}}>
-					<View style={{width: width*0.7,justifyContent: "center",alignItems: "center"}}>
-						<Text style={{fontSize: 18, color: "green"}}>You do not have any recorded </Text>
-						<Text style={{fontSize: 18, color: "green"}}>transaction, yet.</Text>
-						<Text>Hit the button and create your </Text>
-						<Text>first transaction.</Text>
-					</View>
+	_renderEmptyList = () => {
+		return (
+			<View
+				style={{
+					height: height - 150,
+					justifyContent: "center",
+					alignItems: "center"
+				}}
+			>
+				<View
+					style={{
+						width: width * 0.7,
+						justifyContent: "center",
+						alignItems: "center"
+					}}
+				>
+					<Text style={{ fontSize: 18, color: "green" }}>
+						You do not have any recorded{" "}
+					</Text>
+					<Text style={{ fontSize: 18, color: "green" }}>
+						transaction, yet.
+					</Text>
+					<Text>Hit the button and create your </Text>
+					<Text>first transaction.</Text>
 				</View>
-			);
+			</View>
+		);
+	};
+
+	_renderFABIcon = () => {
+		return <Icon name="list" color="white" style={styles.actionButtonIcon} />;
 	};
 
 	render() {
 		if (this.state.isLoading) {
-			return (<LoadingDataDialog />);
+			return <LoadingDataDialog />;
 		} else {
 			return (
-				<View  style={{flex : 1}}>
+				<View style={{ flex: 1 }}>
 					<FlatList
 						contentContainerStyle={{
 							flexDirection: "column",
-							justifyContent: "center",
+							justifyContent: "center"
 						}}
 						keyExtractor={this._keyExtractor}
 						data={this.state.data}
@@ -117,32 +151,59 @@ export default class TransactionsTab extends React.Component {
 						onEndTreshold={6}
 						ListEmptyComponent={this._renderEmptyList}
 					/>
-					<TouchableOpacity
-						activeOpacity={0.5}
-						onPress={() =>
-							this.props.navigation.navigate("Transaction",{
-								updateData: this._getUpdatedData.bind(this)
-							})
-					}
-						style={styles.TouchableOpacityStyle}
+					<ActionButton
+						degrees={-20}
+						buttonColor="green"
+						renderIcon={this._renderFABIcon}
+						buttonTextStyle={{ fontSize: 30 }}
 					>
-						<Icon color="white" name="add" size={30} />
-					</TouchableOpacity>
+						<ActionButton.Item
+							buttonColor="darkred"
+							title="Reset filter"
+							onPress={this._resetFilter.bind(this)}
+						>
+							<Icon
+								name="delete-sweep"
+								color="white"
+								style={styles.actionButtonIcon}
+							/>
+						</ActionButton.Item>
+						<ActionButton.Item
+							buttonColor="rgb(51, 153, 102)"
+							title="Filter"
+							onPress={() =>
+								this.props.navigation.navigate("Filter", {
+									setFilter: this._setFilter.bind(this)
+								})
+							}
+						>
+							<Icon
+								name="filter-list"
+								color="white"
+								style={styles.actionButtonIcon}
+							/>
+						</ActionButton.Item>
+						<ActionButton.Item
+							buttonColor="rgb(102, 153, 0)"
+							title="New"
+							onPress={() =>
+								this.props.navigation.navigate("Transaction", {
+									updateData: this._getUpdatedData.bind(this)
+								})
+							}
+						>
+							<Icon name="add" color="white" style={styles.actionButtonIcon} />
+						</ActionButton.Item>
+					</ActionButton>
 				</View>
 			);
 		}
 	}
 }
 const styles = StyleSheet.create({
-	TouchableOpacityStyle: {
-		backgroundColor: "green",
-		position: "absolute",
-		width: 55,
-		height: 55,
-		alignItems: "center",
-		justifyContent: "center",
-		borderRadius: 27,
-		right: 30,
-		bottom: 30
+	actionButtonIcon: {
+		fontSize: 20,
+		height: 22,
+		color: "white"
 	}
 });

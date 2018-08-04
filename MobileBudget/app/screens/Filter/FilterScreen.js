@@ -11,9 +11,10 @@ import {
 import { Icon, Text, CheckBox, Divider } from "react-native-elements";
 import DatePicker from "react-native-datepicker";
 import moment from "moment";
+import { connect } from "react-redux";
 import { height, width } from "../../constants/";
 
-export default class FilterScreen extends Component<Props> {
+class FilterScreen extends Component<Props> {
 	static navigationOptions = ({ navigation }) => {
 		return {
 			headerRight: (
@@ -40,7 +41,8 @@ export default class FilterScreen extends Component<Props> {
 			fromDate: "01-01-2010",
 			toDate: moment(new Date()).format("DD-MM-YYYY"),
 			dateDesc: true,
-			nameAsc: true
+			nameAsc: true,
+			wallet: "all"
 		};
 
 		this.defaultValues = this.state;
@@ -72,24 +74,35 @@ export default class FilterScreen extends Component<Props> {
 	};
 
 	_setFilterUrl = () => {
-		let url = "&date_after="+ moment(this.state.fromDate, 'DD-MM-YYYY').format('YYYY-MM-DD');
-		url = url.concat("&date_before="+ moment(this.state.toDate, 'DD-MM-YYYY').format('YYYY-MM-DD'))
+		let url =
+			"&date_after=" +
+			moment(this.state.fromDate, "DD-MM-YYYY").format("YYYY-MM-DD");
+		url = url.concat(
+			"&date_before=" +
+				moment(this.state.toDate, "DD-MM-YYYY").format("YYYY-MM-DD")
+		);
 
-		if(this.state.dateDesc){
+		let walletID = this.props.navigation.getParam("wallet");
+		if(Number.isInteger(walletID) == false && this.state.wallet != "all"){
+			url = url.concat("&wallet="+this.state.wallet);
+		}
+
+		if (this.state.dateDesc) {
 			url = url.concat("&ordering=-date");
 		} else {
 			url = url.concat("&ordering=date");
 		}
 
-		if(this.state.category != "all"){
+		if (this.state.category != "all") {
 			url = url.concat("&category=" + this.state.category);
 		}
 
-		if(this.state.nameAsc){
-			url = url.concat("&ordering=name");
-		} else {
-			url = url.concat("&ordering=-name");
-		}
+		// if (this.state.nameAsc) {
+		// 	url = url.concat("&ordering=name");
+		// } else {
+		// 	url = url.concat("&ordering=-name");
+		// }
+		console.log(url);
 		this.props.navigation.state.params.setFilter(url);
 		this.props.navigation.pop();
 	};
@@ -108,9 +121,41 @@ export default class FilterScreen extends Component<Props> {
 			);
 		}
 
+		let walletID = this.props.navigation.getParam("wallet");
+		let walletsArray = [];
+		if (Number.isInteger(walletID) == false) {
+			walletsArray.push(<Picker.Item label="All" value="all" key={-1} />);
+			for (var i = 0; i < this.props.wallets.length; i++) {
+				walletsArray.push(
+					<Picker.Item
+						label={this.props.wallets[i].name}
+						value={this.props.wallets[i].pk}
+						key={i}
+					/>
+				);
+			}
+		}
+
 		return (
 			<View style={styles.container}>
 				<ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
+				{ Number.isInteger(walletID) == false ?
+					<View>
+						<Text h4 style={styles.categoryHeader}>
+							Wallet
+						</Text>
+						<Picker
+							selectedValue={this.state.wallet}
+							mode="dialog"
+							style={{ height: 50, width: width * 0.95 }}
+							onValueChange={(itemValue, itemIndex) =>
+								this.setState({ wallet: itemValue })
+							}
+						>
+							{walletsArray}
+						</Picker>
+					</View>
+					: null }
 					<Text h4 style={styles.categoryHeader}>
 						Date
 					</Text>
@@ -252,20 +297,24 @@ export default class FilterScreen extends Component<Props> {
 							/>
 						</View>
 					</View>
-					<View style={[styles.subContainer,{borderTopWidth: 0, marginTop:20}]}>
+					<View
+						style={[styles.subContainer, { borderTopWidth: 0, marginTop: 20 }]}
+					>
 						<TouchableOpacity
 							activeOpacity={0.5}
 							style={{
 								flexDirection: "row",
 								alignItems: "center",
 								padding: 10,
-								borderRadius:10,
+								borderRadius: 10,
 								backgroundColor: "green"
 							}}
-							onPress = {this._setFilterUrl.bind(this)}
+							onPress={this._setFilterUrl.bind(this)}
 						>
 							<Icon color="white" name="done" size={30} />
-							<Text style={{marginLeft: 5, color: "white", fontSize: 18}}>Confirm</Text>
+							<Text style={{ marginLeft: 5, color: "white", fontSize: 18 }}>
+								Confirm
+							</Text>
 						</TouchableOpacity>
 					</View>
 				</ScrollView>
@@ -278,7 +327,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		flexDirection: "column",
-		backgroundColor: "white",
+		backgroundColor: "white"
 	},
 	categoryHeader: {
 		color: "green",
@@ -312,3 +361,14 @@ const styles = StyleSheet.create({
 		width: 320
 	}
 });
+
+function mapStateToProps(state) {
+	return {
+		wallets: state.wallets
+	};
+}
+
+export default connect(
+	mapStateToProps,
+	null
+)(FilterScreen);

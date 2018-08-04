@@ -69,7 +69,12 @@ class WalletTransactionsListItem extends React.Component {
 			});
 	};
 
+
 	render() {
+		let transactionWallet = this.props.wallets.filter(
+			x => parseInt(x.pk) === parseInt(this.props.item.wallet)
+		);
+
 		let color = "darkseagreen";
 		let amount = this.props.item.amount;
 		if (amount < 0) {
@@ -121,6 +126,7 @@ class WalletTransactionsListItem extends React.Component {
 									</View>
 								</View>
 							</View>
+							<Text>{transactionWallet[0].name}</Text>
 						</View>
 					</TouchableOpacity>
 
