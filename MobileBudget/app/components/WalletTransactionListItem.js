@@ -106,6 +106,7 @@ class WalletTransactionsListItem extends React.Component {
 								<Text style={{ margin: 5 }}>{this.props.item.date}</Text>
 							</View>
 							<View style={styles.content}>
+							<View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
 								<Image
 									style={styles.image}
 									source={ICONS[this.props.item.category]}
@@ -126,7 +127,11 @@ class WalletTransactionsListItem extends React.Component {
 									</View>
 								</View>
 							</View>
-							<Text>{transactionWallet[0].name}</Text>
+							<View style={{marginTop: 20, flexDirection: "row", alignItems: "center"}}>
+							  <Icon color="green" name= "account-balance-wallet" type= "material-icons"/>
+								<Text style={{marginLeft: 7, fontSize: 18}}>{transactionWallet[0].name}</Text>
+							</View>
+							</View>
 						</View>
 					</TouchableOpacity>
 
@@ -161,10 +166,8 @@ const styles = StyleSheet.create({
 	},
 	content: {
 		backgroundColor: "white",
-		height: 150,
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
+		height: 170,
+		justifyContent: "center",
 		padding: 5,
 		borderBottomColor: "darkgray",
 		borderRightColor: "darkgray",

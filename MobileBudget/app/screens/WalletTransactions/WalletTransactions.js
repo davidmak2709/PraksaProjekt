@@ -116,17 +116,7 @@ class WalletTransactions extends React.Component {
 						onEndReached={this._getOlderData.bind(this)}
 						onEndTreshold={6}
 					/>
-					<TouchableOpacity
-						activeOpacity={0.5}
-						onPress={() =>
-							this.props.navigation.navigate("Transaction",{
-								updateData: this._getUpdatedData.bind(this)
-							})
-					}
-						style={styles.TouchableOpacityStyle}
-					>
-						<Icon color="white" name="add" size={30} />
-					</TouchableOpacity>
+				
 				</View>
 			);
 		}
@@ -137,17 +127,7 @@ const styles = StyleSheet.create({
 	listItemContainer: {
 		height: 100
 	},
-	TouchableOpacityStyle: {
-		backgroundColor: "green",
-		position: "absolute",
-		width: 55,
-		height: 55,
-		alignItems: "center",
-		justifyContent: "center",
-		borderRadius: 27,
-		right: 30,
-		bottom: 30
-		}
+
 });
 
 export default withNavigation(WalletTransactions);

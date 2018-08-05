@@ -24,6 +24,8 @@ import { height, width } from "../../constants/";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { connect } from "react-redux";
 import { updateWallet } from "../../redux/actions";
+import DatePicker from "react-native-datepicker";
+import moment from "moment";
 
 class TransactionScreen extends React.Component {
 	static userToken = "";
@@ -41,7 +43,9 @@ class TransactionScreen extends React.Component {
 			wallet: "",
 			category: "paycheck",
 			name: "",
-			amount: "zero"
+			amount: "zero",
+			date: moment(new Date()).format("DD-MM-YYYY"),
+			recurring: false
 		};
 
 		this._getCategories();
@@ -95,6 +99,7 @@ class TransactionScreen extends React.Component {
 			currency = "CHF";
 		}
 
+
 		fetch("http://46.101.226.120:8000/api/wallets/transactions/create/", {
 			method: "POST",
 			headers: {
@@ -106,7 +111,9 @@ class TransactionScreen extends React.Component {
 				name: this.state.name,
 				amount: amount,
 				currency: currency,
-				category: this.state.category
+				category: this.state.category,
+				date: moment(this.state.date, "DD-MM-YYYY").format("YYYY-MM-DD"),
+				recurring: this.state.recurring ? "True" : "False",
 			})
 		})
 		.then(response => {
@@ -115,6 +122,7 @@ class TransactionScreen extends React.Component {
 			return Promise.all([statusCode, data]);
 		})
 		.then(([res, data]) => {
+			console.log(data);
 			if (res == 201) {
 				Alert.alert("Confirmation","Transaction recorded.");
 				this.props.navigation.state.params.updateData();
@@ -173,8 +181,50 @@ class TransactionScreen extends React.Component {
 			dataFieldsVisible: true,
 			name: name,
 			amount: amount,
-			currency: currency
 		});
+
+		if (currency == "HRK") {
+			this.setState({
+				euro: false,
+				dollar: false,
+				kuna: true,
+				pound: false,
+				franc: false
+			})
+		} else if (currency == "USD") {
+			this.setState({
+				euro: false,
+				dollar: true,
+				kuna: false,
+				pound: false,
+				franc: false
+			})
+		} else if (currency == "EUR") {
+			this.setState({
+				euro: true,
+				dollar: false,
+				kuna: false,
+				pound: false,
+				franc: false
+			})
+		} else if (currency == "GBP") {
+			this.setState({
+				euro: false,
+				dollar: false,
+				kuna: false,
+				pound: true,
+				franc: false
+			})
+		} else {
+			this.setState({
+				euro: false,
+				dollar: false,
+				kuna: false,
+				pound: false,
+				franc: true
+			})
+		}
+
 	};
 
 	render() {
@@ -347,6 +397,43 @@ class TransactionScreen extends React.Component {
 					</View>
 
 					{/*kraj odabira valute*/}
+					<View style={{marginTop: 20 ,alignItems: "center", justifyContent: "center"}}>
+					<DatePicker
+						style={{ width: 200, margin: 10 }}
+						date={this.state.date}
+						mode="date"
+						placeholder="select date"
+						format="DD-MM-YYYY"
+						minDate="01-01-2010"
+						maxDate={moment(new Date()).format("DD-MM-YYYY")}
+						confirmBtnText="Confirm"
+						cancelBtnText="Cancel"
+						customStyles={{
+							dateIcon: {
+								position: "absolute",
+								left: 0,
+								top: 4,
+								marginLeft: 0
+							},
+							dateInput: {
+								marginLeft: 36
+							}
+						}}
+						onDateChange={date => {
+							this.setState({ date: date });
+						}}
+					/>
+					</View>
+					<View style={{marginTop: 20 ,alignItems: "center", justifyContent: "center"}}>
+						<CheckBox
+							center
+							title="Recurring"
+							checked={this.state.recurring}
+							checkedColor="green"
+							uncheckedColor="green"
+							onPress = {() => this.setState({recurring: !this.state.recurring})}
+						/>
+					</View>
 					<View
 						style={{
 							width: width * 0.88,

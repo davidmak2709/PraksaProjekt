@@ -124,7 +124,7 @@ export default class UserTab extends React.Component {
 				headers: {
 					"Content-Type": "application/json",
 					Authorization: "Token " + token,
-					OLD_PASSWORD_FIELD_ENABLED: true
+					OLD_PASSWORD_FIELD_ENABLED: "True"
 				},
 				body: JSON.stringify({
 					new_password1: this.state.password1,

@@ -124,6 +124,7 @@ class Wallet extends Component {
 	}
 
 	render() {
+		let balance = this.props.balance;
 		let color = "darkseagreen";
 	 	let state = this.props.balance;
 		if (state < 0) {
@@ -218,7 +219,7 @@ class Wallet extends Component {
 						/>
 						<Text style={{marginLeft: 10, marginTop: 10, color:"green"}}>Balance:</Text>
 						<FormInput
-							placeholder="Insert account balance"
+							placeholder="Insert account balance "
 							containerStyle={[
 								styles.input,
 								{ borderBottomColor: this.state.balanceBorderColor }
@@ -228,11 +229,10 @@ class Wallet extends Component {
 							keyboardType="numeric"
 							selectionColor="orangered"
 							blurOnSubmit={false}
-							onSubmitEditing={() => Keyboard.dismiss()}
+							onSubmitEditing={(balance) => Keyboard.dismiss()}
 							onChangeText={balance => this.setState({balance: balance})}
 							returnKeyType="done"
 							ref={balanceRef => (this.balanceRef = balanceRef)}
-							value={this.state.balance.toString()}
 						/>
 						<View
 							style={[

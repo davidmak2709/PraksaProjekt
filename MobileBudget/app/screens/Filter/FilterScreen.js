@@ -262,6 +262,7 @@ class FilterScreen extends Component<Props> {
 							{categories}
 						</Picker>
 					</View>
+					{/*
 					<Text h4 style={styles.categoryHeader}>
 						Name
 					</Text>
@@ -296,9 +297,9 @@ class FilterScreen extends Component<Props> {
 								onPress={() => this.setState({ nameAsc: false })}
 							/>
 						</View>
-					</View>
+					</View> */}
 					<View
-						style={[styles.subContainer, { borderTopWidth: 0, marginTop: 20 }]}
+						style={[styles.subContainer, { borderTopWidth: 0, marginTop: 40 }]}
 					>
 						<TouchableOpacity
 							activeOpacity={0.5}

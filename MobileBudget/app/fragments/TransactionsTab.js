@@ -62,6 +62,7 @@ export default class TransactionsTab extends React.Component {
 					isLoading: false,
 					next: responseJson.next
 				});
+				console.log(responseJson);
 			})
 			.catch(error => {
 				console.error(error);
