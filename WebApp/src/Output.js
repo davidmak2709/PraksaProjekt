@@ -6,6 +6,8 @@ import Dropdown from 'react-dropdown';
 var options = [];
 var optionscurr = [{ value: "HRK", label: "HRK"},
                     { value: "EUR", label: "EUR"}];
+var optionsCategories = [{ value: "HRK", label: "HRK"},
+                        { value: "EUR", label: "EUR"}];
 
 class Output extends Component {
 constructor(props){
@@ -100,9 +102,14 @@ handleSelectcurr = (selectedOption) => {
   this.setState({ currency:selectedOption.value });
   console.log(`Option selected:`, selectedOption);
 }
+handleSelected = (selectedOption) => {
+  this.setState({ category:selectedOption.value });
+  console.log(`Option selected:`, this.state.category);
+}
+
 
 renderaddform(){
-  //// TODO: dropdown za kategorije i odabir datuma
+  //// TODO: dropdown za kategorije i odabir datuma i ponavljajuceg troska
       return   (
         <form onSubmit={this.handleSubmit}>
           <label>
@@ -117,6 +124,7 @@ renderaddform(){
             <input type="float" id="value" value={this.state.value} onChange={this.handleChange} />
           </label>
           <Dropdown options={optionscurr} onChange={this.handleSelectcurr}  placeholder="Select a currency" />
+          <Dropdown id="category" options={optionsCategories} onChange={this.handleSelected}  placeholder="Select a category" />
           <label>
             Category:
             <input type="text" id="category" value={this.state.category} onChange={this.handleChange} />
