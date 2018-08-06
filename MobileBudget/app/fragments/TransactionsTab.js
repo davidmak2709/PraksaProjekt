@@ -29,7 +29,8 @@ export default class TransactionsTab extends React.Component {
 			currentPage: 1,
 			data: [],
 			next: "",
-			filter: "&ordering=-date"
+			filter: "&ordering=-date",
+			refreshing: false
 		};
 		this._bootstrapAsync();
 	}
@@ -60,12 +61,15 @@ export default class TransactionsTab extends React.Component {
 				this.setState({
 					data: [...this.state.data, ...responseJson.results],
 					isLoading: false,
+					refreshing: false,
 					next: responseJson.next
 				});
-				console.log(responseJson);
 			})
 			.catch(error => {
-				console.error(error);
+				this.setState({
+					isLoading: false,
+					refreshing: false,
+					});
 			});
 	};
 
@@ -134,6 +138,17 @@ export default class TransactionsTab extends React.Component {
 		return <Icon name="list" color="white" style={styles.actionButtonIcon} />;
 	};
 
+	_handleRefresh = () => {
+		this.setState({
+			refreshing: true,
+			currentPage: 1,
+			data:[]
+		},
+		() => {
+			this._getWalletTransactions();
+		});
+	}
+
 	render() {
 		if (this.state.isLoading) {
 			return <LoadingDataDialog />;
@@ -143,7 +158,8 @@ export default class TransactionsTab extends React.Component {
 					<FlatList
 						contentContainerStyle={{
 							flexDirection: "column",
-							justifyContent: "center"
+							justifyContent: "center",
+							paddingBottom: 85
 						}}
 						keyExtractor={this._keyExtractor}
 						data={this.state.data}
@@ -151,6 +167,8 @@ export default class TransactionsTab extends React.Component {
 						onEndReached={this._getOlderData.bind(this)}
 						onEndTreshold={6}
 						ListEmptyComponent={this._renderEmptyList}
+						refreshing={this.state.refreshing}
+						onRefresh= {this._handleRefresh}
 					/>
 					<ActionButton
 						degrees={-20}

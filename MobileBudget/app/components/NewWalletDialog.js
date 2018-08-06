@@ -119,15 +119,7 @@ class NewWalletDialog extends Component {
 
 	render() {
 		return (
-			<Modal
-				animationType="fade"
-				transparent={true}
-				visible={true}
-				onRequestClose={() => {
-					console.log("Close.");
-				}}
-			>
-				<View style={styles.container}>
+
 					<View style={styles.contentContainer}>
 						<View style={styles.header}>
 							<Text h4>New wallet</Text>
@@ -295,23 +287,14 @@ class NewWalletDialog extends Component {
 							</TouchableOpacity>
 						</View>
 					</View>
-				</View>
-			</Modal>
 		);
 	}
 }
 
 const styles = StyleSheet.create({
-	container: {
+	contentContainer: {
 		flex: 1,
 		flexDirection: "column",
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: "rgba(0,0,0,0.5)"
-	},
-	contentContainer: {
-		width: width * 0.925,
-		height: height * 0.8,
 		backgroundColor: "white"
 	},
 	header: {

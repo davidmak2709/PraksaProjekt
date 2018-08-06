@@ -49,9 +49,12 @@ const AppStack = createStackNavigator({
 		navigationOptions: ({ navigation }) => ({
 			title: `Filter`,
 		})
-	},
+	}},
+	{
+    mode: 'modal',
+  }
 
-});
+);
 
 const AuthStack = createStackNavigator({
 	Login: LoginScreen,

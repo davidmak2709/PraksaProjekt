@@ -6,7 +6,8 @@ import {
 	TouchableOpacity,
 	View,
 	ScrollView,
-	Picker
+	Picker,
+	Switch
 } from "react-native";
 import { Icon, Text, CheckBox, Divider } from "react-native-elements";
 import DatePicker from "react-native-datepicker";
@@ -42,7 +43,8 @@ class FilterScreen extends Component<Props> {
 			toDate: moment(new Date()).format("DD-MM-YYYY"),
 			dateDesc: true,
 			nameAsc: true,
-			wallet: "all"
+			wallet: "all",
+			recurring: false
 		};
 
 		this.defaultValues = this.state;
@@ -97,6 +99,9 @@ class FilterScreen extends Component<Props> {
 			url = url.concat("&category=" + this.state.category);
 		}
 
+		if(this.state.recurring){
+			url = url.concat("&recurring=" + this.state.recurring);
+		}
 		// if (this.state.nameAsc) {
 		// 	url = url.concat("&ordering=name");
 		// } else {
@@ -262,6 +267,14 @@ class FilterScreen extends Component<Props> {
 							{categories}
 						</Picker>
 					</View>
+					<Text h4 style={styles.categoryHeader}>
+						Recurring
+					</Text>
+					<View style={[styles.subContainer,{flexDirection: "row", height: 70, justifyContent: "space-around"}]}>
+						<Text style={styles.categoryContentLabel}>Recurring transaction only</Text>
+						<Switch value={this.state.recurring} onValueChange={() => this.setState({recurring: !this.state.recurring})} />
+					</View>
+
 					{/*
 					<Text h4 style={styles.categoryHeader}>
 						Name

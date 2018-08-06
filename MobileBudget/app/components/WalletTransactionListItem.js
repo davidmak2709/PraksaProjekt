@@ -98,8 +98,8 @@ class WalletTransactionsListItem extends React.Component {
 					>
 						<View style={styles.container}>
 							<View style={styles.header}>
-								<View style={{ width: width * 0.5 }}>
-									<Text h4 style={{ flexWrap: "wrap", color: "green" }}>
+								<View style={{ width: width * 0.5, flexDirection: "row" }}>
+									<Text h4 style={{flexWrap: "wrap", color: "green" }}>
 										{this.props.item.name}
 									</Text>
 								</View>
@@ -127,9 +127,14 @@ class WalletTransactionsListItem extends React.Component {
 									</View>
 								</View>
 							</View>
-							<View style={{marginTop: 20, flexDirection: "row", alignItems: "center"}}>
-							  <Icon color="green" name= "account-balance-wallet" type= "material-icons"/>
+							<View style={{marginTop: 20, flexDirection: "row", justifyContent: "space-between" ,alignItems: "center"}}>
+								<View style={{flexDirection: "row",}}>
+								<Icon color="green" name= "account-balance-wallet" type= "material-icons"/>
 								<Text style={{marginLeft: 7, fontSize: 18}}>{transactionWallet[0].name}</Text>
+								</View>
+								{ this.props.item.recurring ?
+								<Icon color="darkgreen" name= "sync" type= "material-icons" size={30}/>
+								: null}
 							</View>
 							</View>
 						</View>

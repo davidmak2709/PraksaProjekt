@@ -28,7 +28,8 @@ class WalletTransactions extends React.Component {
 			currentPage: 1,
 			data: [],
 			next: "",
-			filter: "&ordering=-date"
+			filter: "&ordering=-date",
+			refreshing: false,
 		};
 		this._bootstrapAsync();
 	}
@@ -42,7 +43,6 @@ class WalletTransactions extends React.Component {
 		userToken = await AsyncStorage.getItem("userToken");
 	};
 
-//+this.props.navigation.getParam("pk")
 	_getWalletTransactions = () => {
 		let url ="http://46.101.226.120:8000/api/wallets/transactions/?page="+this.state.currentPage+"&wallet="+this.props.navigation.getParam("pk")+this.state.filter
 		console.log(url);
@@ -60,11 +60,15 @@ class WalletTransactions extends React.Component {
 				this.setState({
 					data: [...this.state.data, ...responseJson.results],
 					isLoading: false,
+					refreshing: false,
 					next: responseJson.next
 				});
 			})
 			.catch(error => {
-				console.error(error);
+				this.setState({
+					isLoading: false,
+					refreshing: false,
+					});
 			});
 	};
 
@@ -96,7 +100,16 @@ class WalletTransactions extends React.Component {
 		return <WalletTransactionsListItem item={item} token={userToken} />;
 	};
 
-
+	_handleRefresh = () => {
+		this.setState({
+			refreshing: true,
+			currentPage: 1,
+			data: []
+		},
+		() => {
+			this._getWalletTransactions();
+		});
+	}
 
 	render() {
 		let view;
@@ -115,8 +128,10 @@ class WalletTransactions extends React.Component {
 						renderItem={this._renderItem}
 						onEndReached={this._getOlderData.bind(this)}
 						onEndTreshold={6}
+						refreshing={this.state.refreshing}
+						onRefresh= {this._handleRefresh}
 					/>
-				
+
 				</View>
 			);
 		}
