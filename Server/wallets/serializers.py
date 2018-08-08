@@ -25,8 +25,8 @@ class TransactionSerializer(serializers.ModelSerializer):
 			raise serializers.ValidationError("User doesn't own this wallet")
 		return value
 
-	def validate_date(self, value):
-		pass
+	#def validate_date(self, value):
+		#pass
 		# TODO: check date?
 
 class TransactionUpdateSerializer(serializers.ModelSerializer):
