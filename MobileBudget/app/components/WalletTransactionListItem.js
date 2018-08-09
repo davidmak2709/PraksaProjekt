@@ -14,11 +14,12 @@ import { connect } from "react-redux";
 import { updateWallet } from "../redux/actions";
 
 class WalletTransactionsListItem extends React.Component {
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
 		this.state = {
 			visible: true,
-			transactionDialog: false
+			transactionDialog: false,
+			recurring: this.props.item.recurring
 		};
 	}
 
@@ -45,7 +46,33 @@ class WalletTransactionsListItem extends React.Component {
 				console.error(error);
 			});
 	};
-
+	_setRecurringTransaction = () => {
+			const recurring = !this.state.recurring;
+			this.setState({recurring: recurring}, () => {
+				fetch("http://46.101.226.120:8000/api/wallets/transactions/update/"+this.props.item.pk +"/", {
+					method: "PUT",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: "Token " + this.props.token
+					},
+					body: JSON.stringify({
+						wallet: this.props.item.wallet,
+						name: this.props.item.name,
+						amount: this.props.item.amount,
+						currency: this.props.item.currency,
+						date: this.props.item.date,
+						category: this.props.item.category,
+						recurring: recurring,
+				}),
+				}).then(response => {
+						if(!response.ok){
+							Alert.alert("Error.");
+						}
+				}).catch(error => {
+						console.error(error);
+				});
+	});
+};
 	_getUpdatedStatus = () => {
 		fetch("http://46.101.226.120:8000/api/wallets/"+ this.props.item.wallet +"/", {
 			method: "GET",
@@ -132,9 +159,17 @@ class WalletTransactionsListItem extends React.Component {
 								<Icon color="green" name= "account-balance-wallet" type= "material-icons"/>
 								<Text style={{marginLeft: 7, fontSize: 18}}>{transactionWallet[0].name}</Text>
 								</View>
-								{ this.props.item.recurring ?
-								<Icon color="darkgreen" name= "sync" type= "material-icons" size={30}/>
-								: null}
+								<TouchableOpacity
+										activeOpacity={0.5}
+										style={{padding: 10, borderWidth: 1, borderColor: "green", borderRadius: 100}}
+										onPress= {this._setRecurringTransaction}
+								>
+								{ this.state.recurring  ?
+									<Icon color="green" name= "sync" type= "material-icons" size={30}/>
+								:
+									<Icon color="lightgray" name= "sync" type= "material-icons" size={30}/>
+								}
+								</TouchableOpacity>
 							</View>
 							</View>
 						</View>

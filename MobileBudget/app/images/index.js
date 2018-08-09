@@ -7,6 +7,7 @@ export const ICONS = {
   groceries: require("./groceries.png"),
   healthcare: require("./healthcare.png"),
   hobby: require("./hobby.png"),
+  leisure_hobbies: require("./hobby.png"),
   household: require("./household.png"),
   insurance: require("./insurance.png"),
   other: require("./other.png"),

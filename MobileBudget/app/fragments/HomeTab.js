@@ -1,18 +1,17 @@
 import React from 'react';
-import { Text, View, Dimensions } from 'react-native';
+import { Text, View, Dimensions, AsyncStorage } from 'react-native';
 import { StatusBar } from 'react-native';
+import CategoriesSlideShow from "../components/CategoriesSlideShow";
 
 export default class HomeTab extends React.Component {
-
-  componentDidMount(){
+  componentWillMount(){
     StatusBar.setHidden(true);
   }
 
+
   render() {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Home!</Text>
-      </View>
+        <CategoriesSlideShow />
     );
   }
 }

@@ -122,7 +122,6 @@ class TransactionScreen extends React.Component {
 			return Promise.all([statusCode, data]);
 		})
 		.then(([res, data]) => {
-			console.log(data);
 			if (res == 201) {
 				Alert.alert("Confirmation","Transaction recorded.");
 				this.props.navigation.state.params.updateData();
