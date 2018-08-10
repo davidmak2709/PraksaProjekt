@@ -19,10 +19,13 @@ class WalletTransactionsListItem extends React.Component {
 		this.state = {
 			visible: true,
 			transactionDialog: false,
-			recurring: this.props.item.recurring
+			recurring: false
 		};
 	}
 
+	componentWillMount() {
+		this.setState({recurring: this.props.item.recurring});
+	}
 	_deleteTransaction = () => {
 		let url =
 			"http://46.101.226.120:8000/api/wallets/transactions/" +
@@ -157,7 +160,7 @@ class WalletTransactionsListItem extends React.Component {
 							<View style={{marginTop: 20, flexDirection: "row", justifyContent: "space-between" ,alignItems: "center"}}>
 								<View style={{flexDirection: "row",}}>
 								<Icon color="green" name= "account-balance-wallet" type= "material-icons"/>
-								<Text style={{marginLeft: 7, fontSize: 18}}>{transactionWallet[0].name}</Text>
+								{transactionWallet.toString() != "" ?<Text style={{marginLeft: 7, fontSize: 18}}>{transactionWallet[0].name}</Text> : null}
 								</View>
 								<TouchableOpacity
 										activeOpacity={0.5}

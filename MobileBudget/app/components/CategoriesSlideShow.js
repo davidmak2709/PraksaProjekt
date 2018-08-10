@@ -13,8 +13,7 @@ import { height, width } from "../constants";
 import { ICONS } from "../images";
 import Swiper from "react-native-swiper";
 
-
-export default class CategoriesSlideShow extends Component {
+class CategoriesSlideShow extends Component {
 	static userToken;
 	constructor() {
 		super();
@@ -23,17 +22,10 @@ export default class CategoriesSlideShow extends Component {
 			isLoading: true,
 			slides: []
 		};
-		this._bootstrapAsync();
-		this.inArray = [];
-	}
 
-	componentWillMount() {
 		this._getCategories();
 	}
 
-	_bootstrapAsync = async () => {
-		userToken = await AsyncStorage.getItem("userToken");
-	};
 
 	_getCategories = () => {
 		fetch("http://46.101.226.120:8000/api/wallets/transactions/categories/", {
@@ -55,27 +47,30 @@ export default class CategoriesSlideShow extends Component {
 
 	_statistic = () => {
 		this.state.categories.map(x => {
-			this._getCategoryStatistics(x[0], "in");
+			this._getCategoryStatistics(x[0]);
 		});
-
-		this.setState({ isLoading: false });
 	};
 
-	_getCategoryStatistics = (category, type) => {
+	_getCategoryStatistics = category => {
 		fetch(
 			"http://46.101.226.120:8000/api/stats/categories/?category=" + category,
 			{
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
-					Authorization: "Token " + userToken
+					Authorization: "Token " + this.props.token
 				}
 			}
 		)
 			.then(response => response.json())
 			.then(data => {
 				if (data[0].percentage_outcome != 0 || data[0].percentage_income != 0) {
-					this._renderItem(data[0]);
+					this.setState({ slides: [...this.state.slides, data[0]] });
+				}
+
+				//gluplje ne moze :)
+				if(data[0].category == "other"){
+					this.setState({isLoading: false})
 				}
 			})
 			.catch(error => {
@@ -87,7 +82,7 @@ export default class CategoriesSlideShow extends Component {
 		var string = data.category.replace("_", " ");
 		string = string.charAt(0).toUpperCase() + string.substr(1).toLowerCase();
 
-		const item = (
+		return (
 			<View style={styles.slide} key={data.category}>
 				<Text h4 style={{ color: "green" }}>
 					{string}
@@ -116,17 +111,37 @@ export default class CategoriesSlideShow extends Component {
 				</View>
 			</View>
 		);
-		this.setState({ slides: [...this.state.slides, item] });
 	};
 
 	render() {
-		let content = <ActivityIndicator />;
-
 		if (this.state.isLoading === false) {
-			content = this.state.slides;
-		}
-		return (
-			<View>
+			return (
+				<View>
+					<View
+						style={{
+							height: 280,
+							justifyContent: "center",
+							alignItems: "center"
+						}}
+					>
+						<View style={{ height: 250, width: width - 30 }}>
+							<Swiper
+								style={styles.wrapper}
+								showsButtons={true}
+								autoplay={true}
+								autoplayTimeout={5}
+								showsPagination={false}
+								nextButton={<Text style={styles.buttonText}>›</Text>}
+								prevButton={<Text style={styles.buttonText}>‹</Text>}
+							>
+								{this.state.slides.map(x => this._renderItem(x))}
+							</Swiper>
+						</View>
+					</View>
+				</View>
+			);
+		} else {
+			return (
 				<View
 					style={{
 						height: 280,
@@ -134,21 +149,13 @@ export default class CategoriesSlideShow extends Component {
 						alignItems: "center"
 					}}
 				>
-					<View style={{ height: 250, width: width - 30 }}>
-						<Swiper
-							style={styles.wrapper}
-							showsButtons={false}
-							autoplay={true}
-							autoplayTimeout={1}
-							showsPagination={false}
-						>
-							{content}
-						</Swiper>
+					<View style={[styles.slide, { height: 250, width: width - 30 }]}>
+						<ActivityIndicator size="large" />
+						<Text>Loading...</Text>
 					</View>
 				</View>
-
-			</View>
-		);
+			);
+		}
 	}
 }
 
@@ -158,7 +165,9 @@ const styles = StyleSheet.create({
 		height: 250,
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "#fff"
+		backgroundColor: "#fff",
+		borderWidth: 1,
+		borderColor: "darkgray"
 	},
 	textOut: {
 		color: "red",
@@ -174,5 +183,11 @@ const styles = StyleSheet.create({
 		backgroundColor: "transparent",
 		height: 70,
 		width: 70
+	},
+	buttonText: {
+		color: "green",
+		fontSize: 60
 	}
 });
+
+export default CategoriesSlideShow;
