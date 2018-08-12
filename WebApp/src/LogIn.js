@@ -4,7 +4,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import { Route, Redirect } from 'react-router'
+import {Redirect } from 'react-router'
 
 class Login extends Component {
 
@@ -62,7 +62,7 @@ render() {
       err_msg = <p></p>
     }
     if (this.state.redirect) {
-        {window.location.reload();}
+        window.location.reload();
         return <Redirect push to="/" />;
 
       }

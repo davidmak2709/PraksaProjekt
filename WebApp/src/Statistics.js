@@ -23,6 +23,42 @@ var optionsCategories = [{ value: 'paycheck' , label: 'paycheck'},
                         {value: 'utilities' , label: 'utilities' },
                         {value: 'vacation' , label:'vacation' },];
 
+function onSelectRow(row, isSelected, e) {
+  if (isSelected) {
+    if (window.confirm('Do u want delete transaction or toggle reocurring?')) {
+    // Save it!`You just selected '${row['name']}'`
+    var instance = axios.create({
+             baseURL: "http://46.101.226.120:8000/api/",
+             timeout: 4000,
+             headers: {'Authorization': "Token "+window.sessionStorage.getItem("key")}
+
+         });
+
+         console.log('/wallets/transactions/'+ row['pk']+'/')
+
+    instance.delete('/wallets/transactions/'+ row['pk']+'/')
+     .then(function (response) {
+       //dohvacanje svih walleta
+        console.log(response);
+        window.alert("transaction deleted");
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+} else {
+    // Do nothing!
+}
+  }
+}
+
+const selectRowProp = {
+  mode: 'checkbox',
+  clickToSelect: true,
+  unselectable: [2],
+  selected: [1],
+  onSelect: onSelectRow,
+  bgColor: 'gold'
+};
 function getData(){
 
   axios.get('https://www.quandl.com/api/v3/datasets/EOD/AAPL.json?api_key=CXvjxs9TMu42wRzsKrXi')
@@ -97,7 +133,8 @@ class Statistics extends Component {
 
        return (
           <div>
-        <BootstrapTable data={transactions}>
+        <BootstrapTable data={transactions}
+         selectRow={selectRowProp}>
           <TableHeaderColumn isKey dataField='pk'>
             ID
           </TableHeaderColumn>
@@ -119,7 +156,6 @@ class Statistics extends Component {
           <TableHeaderColumn dataField='recurring'>
             Recuring
           </TableHeaderColumn>
-
         </BootstrapTable>
       </div>
 

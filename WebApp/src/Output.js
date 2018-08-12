@@ -1,13 +1,22 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-
 import Dropdown from 'react-dropdown';
 
 var options = [];
 var optionscurr = [{ value: "HRK", label: "HRK"},
                     { value: "EUR", label: "EUR"}];
-var optionsCategories = [{ value: "HRK", label: "HRK"},
-                        { value: "EUR", label: "EUR"}];
+                    var optionsCategories = [{ value: 'paycheck' , label: 'paycheck'},
+                                            { value: 'gasoline', label: 'gasoline'},
+                                            {value: 'charity', label: 'charity'},
+                                            {value:'clothing' , label: 'clothing'},
+                                            {value: 'groceries' , label:'groceries' },
+                                            {value:'gifts' , label:'gifts' },
+                                            {value:'healthcare' , label: 'healthcare'},
+                                            {value: 'household', label:'household' },
+                                            {value: 'insurance', label: 'insurance' },
+                                            {value: 'leisure_hobbies', label: 'leisure_hobbies'},
+                                            {value: 'utilities' , label: 'utilities' },
+                                            {value: 'vacation' , label:'vacation' },];
 
 class Output extends Component {
 constructor(props){
@@ -20,7 +29,6 @@ constructor(props){
   balance:'',
   category:'',
   addform:false,
-  wallets:[],
   length:0,
   walletid:39,
   renderwallets:false,
@@ -134,9 +142,7 @@ renderaddform(){
 }
 
 renderwallet(){
-    //var self =  this;
-    var wallets = this.state.wallets;
-    //// TODO: formatirati izgled i podatke {wallets.map(wallet => <div> {wallet.name}  </div>)}
+    
     return (
        <div>
        <Dropdown options={options} onChange={this.handleSelect}  placeholder="Select a wallet" />

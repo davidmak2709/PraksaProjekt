@@ -18,7 +18,6 @@ constructor(props){
 
  handleClick(event){
    var apiBaseUrl = "http://46.101.226.120:8000/api/";
-   var self = this;
    var payload={
    "username":this.state.username,
    "password":this.state.password,

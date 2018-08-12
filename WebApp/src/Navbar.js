@@ -6,12 +6,12 @@ import Signup from './Signup'
 import Profile from './Profile'
 import Wallet from './Wallet'
 import Output from './Output'
+import Graph from './Graph'
 import {
   BrowserRouter as Router,
   Route,
   Link,
-  Redirect,
-  withRouter
+  Redirect
 } from "react-router-dom";
 import axios from 'axios';
 import example from './example'
@@ -43,7 +43,6 @@ class Navbar extends Component{
    }
 
    logout(){
-     var self = this;
      var apiBaseUrl = "http://46.101.226.120:8000/api/";
 
      var instance = axios.create({
@@ -95,8 +94,8 @@ class Navbar extends Component{
     			      <li className="active"><a href="/">Home</a></li>
     			      <li className="dropdown"><a className="dropdown-toggle" data-toggle="dropdown" href="#">Manage <span className="caret"></span></a>
     			        <ul className="dropdown-menu">
-    			          <li><a href="/output">Output</a></li>
-    			          <li><a href="#">Izlazi</a></li>
+    			          <li><a href="/output">transactions</a></li>
+    			          <li><a href="/graphs">grafovi</a></li>
     			          <li><a href="/example">Investicije</a></li>
     			        </ul>
     			      </li>
@@ -115,6 +114,7 @@ class Navbar extends Component{
           <PrivateRoute path="/wallet" component={Wallet} />
           <PrivateRoute path="/output" component={Output} />
           <PrivateRoute path="/example" component={example} />
+          <PrivateRoute path="/graphs" component={Graph} />
 
 
     		</div>
