@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, ScrollView, Dimensions, AsyncStorage } from 'react-native';
+import { Text, ScrollView, Dimensions, AsyncStorage, RefreshControl } from 'react-native';
 import { StatusBar } from 'react-native';
 import CategoriesSlideShow from "../components/CategoriesSlideShow";
 import WalletTransactionsListItem from "../components/WalletTransactionListItem";
@@ -10,7 +10,8 @@ export default class HomeTab extends React.Component {
 		super();
 		this.state = {
 			lastTransaction: [],
-      isLoading: true
+      isLoading: true,
+      refreshing: false,
 		};
 		this._bootstrapAsync();
 	}
@@ -40,18 +41,33 @@ export default class HomeTab extends React.Component {
 			)
 				.then(response => response.json())
 				.then(responseJson => {
-						this.setState({lastTransaction: responseJson.results[0]});
+						this.setState({lastTransaction: responseJson.results[0], refreshing: false});
 				})
 				.catch(error => {
 					this.setState({
 						isLoading: false,
+            refreshing: false,
 						});
 				});
 		};
 
+    _onRefresh = () => {
+      this.setState({refreshing: true}, () => {
+        this._getLastTransaction();
+      });
+
+    }
+
   render() {
     return (
-      <ScrollView>
+      <ScrollView
+          refreshControl= {
+            <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh}
+          />
+          }
+      >
         <CategoriesSlideShow token = {userToken}/>
         <WalletTransactionsListItem  item={this.state.lastTransaction} token={userToken} />
       </ScrollView>

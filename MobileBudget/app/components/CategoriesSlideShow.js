@@ -20,7 +20,8 @@ class CategoriesSlideShow extends Component {
 		this.state = {
 			categories: [],
 			isLoading: true,
-			slides: []
+			slides: [],
+			count: 0
 		};
 
 		this._getCategories();
@@ -64,19 +65,26 @@ class CategoriesSlideShow extends Component {
 		)
 			.then(response => response.json())
 			.then(data => {
-				if (data[0].percentage_outcome != 0 || data[0].percentage_income != 0) {
-					this.setState({ slides: [...this.state.slides, data[0]] });
-				}
+				console.log(data[0]);
+				this.setState({count: this.state.count + 1});
 
-				//gluplje ne moze :)
-				if(data[0].category == "other"){
+				if (data[0].percentage_outcome != 0 || data[0].percentage_income != 0) {
+					this.setState({ slides: [...this.state.slides, data[0]]},() => {
+						if(this.state.count == 13){
+							this.setState({isLoading: false})
+						}
+					});
+				}
+				if(this.state.count == 13){
 					this.setState({isLoading: false})
 				}
+
 			})
 			.catch(error => {
 				console.error(error);
 			});
 	};
+
 
 	_renderItem = data => {
 		var string = data.category.replace("_", " ");
