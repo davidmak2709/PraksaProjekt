@@ -5,10 +5,8 @@ class Home extends Component{
 
   render(){
     return (
-      <h3>Welcome Home </h3>
-
+      <h3>Web page for personal finances </h3>
     );
-
   }
 }
 

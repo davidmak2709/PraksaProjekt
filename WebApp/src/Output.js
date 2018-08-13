@@ -1,22 +1,26 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Dropdown from 'react-dropdown';
+import './Output.css';
 
 var options = [];
 var optionscurr = [{ value: "HRK", label: "HRK"},
-                    { value: "EUR", label: "EUR"}];
-                    var optionsCategories = [{ value: 'paycheck' , label: 'paycheck'},
-                                            { value: 'gasoline', label: 'gasoline'},
-                                            {value: 'charity', label: 'charity'},
-                                            {value:'clothing' , label: 'clothing'},
-                                            {value: 'groceries' , label:'groceries' },
-                                            {value:'gifts' , label:'gifts' },
-                                            {value:'healthcare' , label: 'healthcare'},
-                                            {value: 'household', label:'household' },
-                                            {value: 'insurance', label: 'insurance' },
-                                            {value: 'leisure_hobbies', label: 'leisure_hobbies'},
-                                            {value: 'utilities' , label: 'utilities' },
-                                            {value: 'vacation' , label:'vacation' },];
+                    { value: "EUR", label: "EUR"},
+                    {value: "USD", label: "USD"},
+                    {value: "CHF", label: "CHF"},
+                    {value: "GBP", label: "GBP"}];
+var optionsCategories = [{ value: 'paycheck' , label: 'paycheck'},
+                        { value: 'gasoline', label: 'gasoline'},
+                        {value: 'charity', label: 'charity'},
+                        {value:'clothing' , label: 'clothing'},
+                        {value: 'groceries' , label:'groceries' },
+                        {value:'gifts' , label:'gifts' },
+                        {value:'healthcare' , label: 'healthcare'},
+                        {value: 'household', label:'household' },
+                        {value: 'insurance', label: 'insurance' },
+                        {value: 'leisure_hobbies', label: 'leisure_hobbies'},
+                        {value: 'utilities' , label: 'utilities' },
+                        {value: 'vacation' , label:'vacation' },];
 
 class Output extends Component {
 constructor(props){
@@ -30,7 +34,7 @@ constructor(props){
   category:'',
   addform:false,
   length:0,
-  walletid:39,
+  walletid:'',
   renderwallets:false,
   selectedOption: null,
   selectedOptioncurr: null,
@@ -104,6 +108,7 @@ handleChange = event => {
 
 handleSelect = (selectedOption) => {
   this.setState({ selectedOption });
+  this.setState({walletid:selectedOption.label});
   console.log(`Option selected:`, selectedOption);
 }
 handleSelectcurr = (selectedOption) => {
@@ -120,9 +125,9 @@ renderaddform(){
   //// TODO: dropdown za kategorije i odabir datuma i ponavljajuceg troska
       return   (
         <form onSubmit={this.handleSubmit}>
-          <label>
+          <h4 id="title_trans">
             Add new transaction:
-          </label>
+          </h4>
           <label>
             Name:
             <input type="text" id="name" value={this.state.name} onChange={this.handleChange} />
@@ -131,22 +136,30 @@ renderaddform(){
             Amount:
             <input type="float" id="value" value={this.state.value} onChange={this.handleChange} />
           </label>
+          {this.renderwallet()}
+          <label>
+            <input type="text" id="wallet" value={this.state.walletid} onChange={this.handleChange} readonly="readonly"/>
+          </label>
           <Dropdown options={optionscurr} onChange={this.handleSelectcurr}  placeholder="Select a currency" />
+          <label>
+            <input type="text" id="curr" value={this.state.currency} onChange={this.handleChange} readonly="readonly"/>
+          </label>
           <Dropdown id="category" options={optionsCategories} onChange={this.handleSelected}  placeholder="Select a category" />
           <label>
-            Category:
-            <input type="text" id="category" value={this.state.category} onChange={this.handleChange} />
+            <input type="text" id="category" value={this.state.category} onChange={this.handleChange} readonly="readonly"/>
           </label>
           <input type="submit" value="Submit" />
-        </form>);
+        </form>
+      );
 }
 
 renderwallet(){
-    
+
     return (
-       <div>
-       <Dropdown options={options} onChange={this.handleSelect}  placeholder="Select a wallet" />
-       </div>
+
+      <Dropdown options={options} onChange={this.handleSelect}  placeholder="Select a wallet" />
+
+
 
 
    );
@@ -155,9 +168,7 @@ renderwallet(){
 render() {
 
     return (
-      <div>
-      {this.renderwallet()}
-
+      <div id="div_trans">
       {this.renderaddform()}
       <hr />
 

@@ -79,10 +79,11 @@ handleChange = event => {
 renderaddform(){
     if(this.state.addform){
       return   (
+        <div id="div_trans">
         <form onSubmit={this.handleSubmit}>
-          <label>
+          <h4 id="title_trans">
             Add new wallet:
-          </label>
+          </h4>
           <label>
             Name:
             <input type="text" id="name" value={this.state.name} onChange={this.handleChange} />
@@ -96,7 +97,8 @@ renderaddform(){
             <input type="text" id="currency" value={this.state.currency} onChange={this.handleChange} />
           </label>
           <input type="submit" value="Submit" />
-        </form>);
+        </form>
+      </div>);
     }
     else return ;
 
@@ -133,13 +135,10 @@ renderwallet(){
       var obj = this.state.wallets[i];
       console.log(obj);
       wallets.push(
-        <div className="wallet" key={i}>
-          <label>Wallet:</label>
-          {obj.name}
-          <label>balnace:</label>
-          {obj.balance} {obj.currency}
-          <button type="button" class="btn btn-danger" value={obj.pk} onClick={this.handleClick}>X</button>
-
+        <div id="div_trans" className="wallet" key={i}>
+          <h5><b>Wallet:</b> {obj.name}</h5>
+          <h4>balance:<b> {obj.balance}, {obj.currency}</b></h4>
+          <button type="button" class="btn btn-danger" value={obj.pk} onClick={this.handleClick}>Delete!</button>
         </div>
       )
     }
@@ -152,11 +151,13 @@ render() {
     return (
       <div>
       {this.renderwallet()}
-
+      <hr />
       {this.renderaddform()}
       <hr />
 
-      <button type="button" onClick={()=>{this.setState({addform:true})}}>Add new wallet!</button>
+      <button type="button" onClick={()=>{
+        const currentState = this.state.addform;
+        this.setState({addform: !currentState})}}>Add new wallet!</button>
 
       </div>
     );

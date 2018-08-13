@@ -10,7 +10,8 @@ import Dropdown from 'react-dropdown';
 
 var dataGraph2;
 
-var optionsCategories = [{ value: 'paycheck' , label: 'paycheck'},
+var optionsCategories = [{value: '' , label:'all' },
+                        {value: 'paycheck' , label: 'paycheck'},
                         { value: 'gasoline', label: 'gasoline'},
                         {value: 'charity', label: 'charity'},
                         {value:'clothing' , label: 'clothing'},
@@ -164,16 +165,18 @@ class Statistics extends Component {
    renderFilter(){
      //// TODO: dropdown za kategorije i odabir datuma i ponavljajuceg troska
          return   (
-           <div>
-             <label>
-               Filter:
-             </label>
+           <div id="div_trans">
+             <h4>
+               <b>Filter:</b>
+             </h4>
              <label>
                Name:
                <input type="text" id="name" value={this.state.name} onChange={this.handleChange} />
              </label>
              <Dropdown id="category" options={optionsCategories} onChange={this.handleSelected}  placeholder="Select a category" />
-
+             <label>
+               <input type="text" id="category" value={this.state.category} onChange={this.handleChange} readonly="readonly"/>
+             </label>
              <button type="button" class="btn btn-filter" onClick={this.handleClick}>Filter</button>
              </div>
            );
