@@ -63,7 +63,7 @@ class Transaction(models.Model):
 	recurring = models.BooleanField(default=False)
 
 	def __str__(self):
-		return 'Transaction: {} {} {} {}'.format(self.wallet, self.category, self.amount, self.currency)
+		return 'Transaction: {} {} {} {} {}'.format(self.name, self.date, self.category, self.amount, self.currency)
 
 	def save(self, *args, **kwargs):
 		if not Transaction.objects.filter(pk=self.pk).exists():

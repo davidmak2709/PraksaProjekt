@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'restapi',
     'users',
     'wallets',
+    'stats',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
