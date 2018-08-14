@@ -40,7 +40,7 @@ constructor(props){
   .then(function (response) {
     //dohvacanje tokena i spremanje u session
     console.log(JSON.stringify(response) + "TOKEN");
-    //// TODO: sucess poruka redirekcija na home + welcome username i logout
+    
   })
   .catch(function (error) {
     console.log(error);

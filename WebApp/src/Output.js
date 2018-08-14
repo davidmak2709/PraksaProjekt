@@ -81,6 +81,9 @@ handleSubmit(event) {
            headers: {'Authorization': "Token "+this.state.token}
 
        });
+  var recurring;
+  if (document.getElementById('recurring').checked) recurring=true;
+  else recurring=false;
 
   instance.post('/wallets/transactions/create/',{
     wallet: this.state.selectedOption.value,
@@ -88,6 +91,7 @@ handleSubmit(event) {
     amount: this.state.value,
     currency: this.state.currency,
     category: this.state.category,
+    recurring: recurring,
   })
    .then(function (response) {
       //dohvacanje tokena i spremanje u session
@@ -147,6 +151,10 @@ renderaddform(){
           <Dropdown id="category" options={optionsCategories} onChange={this.handleSelected}  placeholder="Select a category" />
           <label>
             <input type="text" id="category" value={this.state.category} onChange={this.handleChange} readonly="readonly"/>
+          </label>
+          <label>
+          Recurring:
+            <input type="checkbox" id="recurring" value="0" />
           </label>
           <input type="submit" value="Submit" />
         </form>

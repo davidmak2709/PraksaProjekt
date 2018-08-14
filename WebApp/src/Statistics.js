@@ -26,29 +26,80 @@ var optionsCategories = [{value: '' , label:'all' },
 
 function onSelectRow(row, isSelected, e) {
   if (isSelected) {
-    if (window.confirm('Do u want delete transaction or toggle reocurring?')) {
-    // Save it!`You just selected '${row['name']}'`
-    var instance = axios.create({
-             baseURL: "http://46.101.226.120:8000/api/",
-             timeout: 4000,
-             headers: {'Authorization': "Token "+window.sessionStorage.getItem("key")}
 
-         });
+    // Get the modal
+var modal = document.getElementById('myModal');
 
-         console.log('/wallets/transactions/'+ row['pk']+'/')
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+var del = document.getElementsByClassName("btn btn-danger")[0];
+var tgl = document.getElementsByClassName("btn btn-info")[0];
 
-    instance.delete('/wallets/transactions/'+ row['pk']+'/')
-     .then(function (response) {
-       //dohvacanje svih walleta
-        console.log(response);
-        window.alert("transaction deleted");
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-} else {
-    // Do nothing!
+modal.style.display = "block";
+
+span.onclick = function() {
+    modal.style.display = "none";
 }
+
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+del.onclick = function(){
+  // Save it!`You just selected '${row['name']}'`
+  var instance = axios.create({
+           baseURL: "http://46.101.226.120:8000/api/",
+           timeout: 4000,
+           headers: {'Authorization': "Token "+window.sessionStorage.getItem("key")}
+
+       });
+
+       console.log('/wallets/transactions/'+ row['pk']+'/')
+
+  instance.delete('/wallets/transactions/'+ row['pk']+'/')
+   .then(function (response) {
+     //dohvacanje svih walleta
+      console.log(response);
+      window.alert("transaction deleted");
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+    modal.style.display = "none";
+
+}
+
+tgl.onclick = function(){
+  // Save it!`You just selected '${row['name']}'`
+  var instance = axios.create({
+           baseURL: "http://46.101.226.120:8000/api/",
+           timeout: 4000,
+           headers: {'Authorization': "Token "+window.sessionStorage.getItem("key")}
+
+       });
+
+       console.log('/wallets/transactions/update/'+ row['pk']+'/')
+  var bool;
+  if(row['recurring']==true) bool=false;
+  else bool = true;
+  console.log(bool);
+  instance.patch('/wallets/transactions/update/'+ row['pk']+'/', {
+    recurring: bool
+  })
+   .then(function (response) {
+     //dohvacanje svih walleta
+      console.log(response);
+      window.alert("recurring toggled");
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+    modal.style.display = "none";
+}
+
+
   }
 }
 
@@ -100,6 +151,7 @@ function getData(){
  });
 }
 
+
 class Statistics extends Component {
   constructor(props){
     super(props);
@@ -136,34 +188,37 @@ class Statistics extends Component {
           <div>
         <BootstrapTable data={transactions}
          selectRow={selectRowProp}>
-          <TableHeaderColumn isKey dataField='pk'>
+          <TableHeaderColumn isKey
+                              width="35"
+                              dataField='pk'>
             ID
-          </TableHeaderColumn>
-          <TableHeaderColumn dataField='name'>
+          </TableHeaderColumn >
+          <TableHeaderColumn width="20%" dataField='name'>
             Name
           </TableHeaderColumn>
-          <TableHeaderColumn dataField='date'>
+          <TableHeaderColumn width="20%" dataField='date'>
             Date
           </TableHeaderColumn>
-          <TableHeaderColumn dataField='category'>
+          <TableHeaderColumn width="20%" dataField='category'>
             Category
           </TableHeaderColumn>
-          <TableHeaderColumn dataField='amount'>
+          <TableHeaderColumn width="20%" dataField='amount'>
             Amount
           </TableHeaderColumn>
-          <TableHeaderColumn dataField='currency'>
+          <TableHeaderColumn width="10%"dataField='currency'>
             Currency
           </TableHeaderColumn>
-          <TableHeaderColumn dataField='recurring'>
-            Recuring
+          <TableHeaderColumn width="15%"dataField='recurring'>
+            Reccuring
           </TableHeaderColumn>
         </BootstrapTable>
       </div>
 
       );
    }
+
+
    renderFilter(){
-     //// TODO: dropdown za kategorije i odabir datuma i ponavljajuceg troska
          return   (
            <div id="div_trans">
              <h4>
@@ -177,9 +232,25 @@ class Statistics extends Component {
              <label>
                <input type="text" id="category" value={this.state.category} onChange={this.handleChange} readonly="readonly"/>
              </label>
-             <button type="button" class="btn btn-filter" onClick={this.handleClick}>Filter</button>
+             <button type="button" class="btn btn-warning" onClick={this.handleClick}>Filter</button>
              </div>
            );
+   }
+
+   renderModal(){
+     return(
+       <div id="myModal" class="modal">
+
+        <div class="modal-content">
+          <span class="close">&times;</span>
+
+          <p>Do you want to edit or delete transaction?</p>
+          <button id="toggle" type="button" class="btn btn-info" >Toggle recurring</button>
+          <button id="delete" type="button" class="btn btn-danger">Delete transaction</button>
+        </div>
+
+      </div>
+     );
    }
 
   render() {
@@ -188,6 +259,7 @@ class Statistics extends Component {
       <div id="chart-container"></div>
       {this.rendertransactions()}
       {this.renderFilter()}
+      {this.renderModal()}
       </div>
     );
   }
