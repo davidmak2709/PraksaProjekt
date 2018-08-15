@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
 	return {
-		wallets: state.wallets
+		wallets: state.wallets.wallets
 	};
 }
 export default connect(	mapStateToProps,	{ setWallets })(WalletTab);

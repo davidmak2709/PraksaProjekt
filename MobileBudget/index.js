@@ -3,10 +3,9 @@ import App from './App';
 import React from "react";
 import { Provider } from "react-redux";
 import {createStore} from 'redux';
-import reducer from "./app/redux/reducers/walletsReducer";
+import rootReducer from "./app/redux/reducers";
 
-const store = createStore(reducer);
-
+const store = createStore(rootReducer);
 
 const AppContainer = () =>
     <Provider store = {store}>

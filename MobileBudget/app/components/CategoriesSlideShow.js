@@ -42,7 +42,8 @@ class CategoriesSlideShow extends Component {
 				});
 			})
 			.catch(error => {
-				console.error(error);
+				Alert.alert("Error","No Internet connection");
+
 			});
 	};
 
@@ -65,7 +66,6 @@ class CategoriesSlideShow extends Component {
 		)
 			.then(response => response.json())
 			.then(data => {
-				console.log(data[0]);
 				this.setState({count: this.state.count + 1});
 
 				if (data[0].percentage_outcome != 0 || data[0].percentage_income != 0) {
@@ -81,7 +81,8 @@ class CategoriesSlideShow extends Component {
 
 			})
 			.catch(error => {
-				console.error(error);
+				Alert.alert("Error","No Internet connection");
+
 			});
 	};
 

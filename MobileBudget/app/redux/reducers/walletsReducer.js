@@ -9,7 +9,7 @@ const initialState = {
 	wallets: []
 };
 
-export default (state = initialState, action) => {
+export default function wallets(state = initialState, action){
 	switch (action.type) {
 		case SET_WALLETS:
 			return {

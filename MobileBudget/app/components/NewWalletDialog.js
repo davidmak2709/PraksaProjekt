@@ -112,7 +112,7 @@ class NewWalletDialog extends Component {
 					}
 				})
 				.catch(error => {
-					console.error(error);
+					Alert.alert("Error","No Internet connection");
 				});
 		}
 	}

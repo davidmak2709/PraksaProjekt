@@ -17,12 +17,12 @@ class AuthLoadingScreen extends React.Component {
 		this._bootstrapAsync();
 	}
 
+
 	_bootstrapAsync = async () => {
 		userToken = await AsyncStorage.getItem("userToken");
 
 		if (userToken) {
 			this._getUserWallets();
-			this.props.navigation.navigate("App");
 		} else {
 			this.props.navigation.navigate("Auth");
 		}
@@ -36,12 +36,19 @@ class AuthLoadingScreen extends React.Component {
 				Authorization: "Token " + userToken
 			}
 		})
-			.then(response => response.json())
-			.then(responseJson => {
-				this.props.setWallets(responseJson);
+			.then(response => {
+				const statusCode = response.status;
+				const data = response.json();
+				return Promise.all([statusCode, data]);
+			})
+			.then(([res, data]) => {
+				if (res == 200) {
+					this.props.setWallets(data);
+					this.props.navigation.navigate("App");
+				}
 			})
 			.catch(error => {
-				console.error(error);
+				Alert.alert("Error","No Internet connection");
 			});
 	};
 
@@ -51,7 +58,7 @@ class AuthLoadingScreen extends React.Component {
 				<Text style={{ fontSize: 32, margin: 5, color: "green" }}>
 					Mobile Budget
 				</Text>
-				<ActivityIndicator size="large" />
+					<ActivityIndicator size="large" />
 			</View>
 		);
 	}
@@ -67,7 +74,10 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
 	return {
-		wallets: state.wallets
+		wallets: state.wallets,
 	};
 }
-export default connect(	mapStateToProps,	{ setWallets })(AuthLoadingScreen);
+export default connect(
+	mapStateToProps,
+	{ setWallets }
+)(AuthLoadingScreen);

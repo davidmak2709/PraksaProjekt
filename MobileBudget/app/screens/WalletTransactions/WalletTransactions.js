@@ -69,6 +69,7 @@ class WalletTransactions extends React.Component {
 					isLoading: false,
 					refreshing: false,
 					});
+					Alert.alert("Error","No Internet connection");
 			});
 	};
 

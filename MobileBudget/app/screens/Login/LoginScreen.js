@@ -89,7 +89,7 @@ export default class LoginScreen extends Component {
 					}
 				})
 				.catch(error => {
-					console.error(error);
+					Alert.alert("Error","No Internet connection");
 				});
 		}
 	}
@@ -110,7 +110,6 @@ export default class LoginScreen extends Component {
 			emailError = false;
 		}
 
-		console.log(emailError);
 		if (emailError === false) {
 			fetch("http://46.101.226.120:8000/api/rest-auth/password/reset/", {
 				method: "POST",
@@ -127,7 +126,7 @@ export default class LoginScreen extends Component {
 					else alert("Error: " + email);
 				})
 				.catch(error => {
-					console.error(error);
+					Alert.alert("Error","No Internet connection");
 				});
 		}
 

@@ -75,7 +75,7 @@ export default class UserTab extends React.Component {
 				oldUsername = responseJson.username;
 			})
 			.catch(error => {
-				console.error(error);
+				Alert.alert("Error","No Internet connection");
 			});
 	};
 
@@ -109,7 +109,8 @@ export default class UserTab extends React.Component {
 				}
 			})
 			.catch(error => {
-				console.error(error);
+				Alert.alert("Error","No Internet connection");
+
 			});
 	}
 
@@ -147,7 +148,8 @@ export default class UserTab extends React.Component {
 					Alert.alert("Result", resultMessage);
 				})
 				.catch(error => {
-					console.error(error);
+					Alert.alert("Error","No Internet connection");
+
 				});
 		}
 	}

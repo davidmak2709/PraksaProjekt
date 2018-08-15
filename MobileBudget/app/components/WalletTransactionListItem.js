@@ -46,7 +46,7 @@ class WalletTransactionsListItem extends React.Component {
 						this._getUpdatedStatus();
 					}
 			}).catch(error => {
-				console.error(error);
+				Alert.alert("Error","No Internet connection");
 			});
 	};
 	_setRecurringTransaction = () => {
@@ -72,7 +72,7 @@ class WalletTransactionsListItem extends React.Component {
 							Alert.alert("Error.");
 						}
 				}).catch(error => {
-						console.error(error);
+						Alert.alert("Error","No Internet connection");
 				});
 	});
 };
@@ -95,7 +95,7 @@ class WalletTransactionsListItem extends React.Component {
 				});
 			})
 			.catch(error => {
-				console.error(error);
+				Alert.alert("Error","No Internet connection");
 			});
 	};
 
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
 	return {
-		wallets: state.wallets
+		wallets: state.wallets.wallets
 	};
 }
 export default connect(mapStateToProps,{ updateWallet })(WalletTransactionsListItem);

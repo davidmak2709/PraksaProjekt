@@ -1,5 +1,6 @@
 import React from "react";
 import {
+	Alert,
 	Text,
 	View,
 	Dimensions,
@@ -70,6 +71,8 @@ export default class TransactionsTab extends React.Component {
 					isLoading: false,
 					refreshing: false,
 					});
+
+					Alert.alert("Error","No Internet connection");
 			});
 	};
 

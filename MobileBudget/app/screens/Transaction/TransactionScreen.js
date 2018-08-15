@@ -75,7 +75,7 @@ class TransactionScreen extends React.Component {
 				this.setState({ response: responseJson });
 			})
 			.catch(error => {
-				console.error(error);
+				Alert.alert("Error","No Internet connection");
 			});
 	};
 
@@ -131,7 +131,7 @@ class TransactionScreen extends React.Component {
 			}
 		})
 		.catch(error => {
-			console.error(error);
+			Alert.alert("Error","No Internet connection");
 		});
 
 	};
@@ -155,7 +155,7 @@ class TransactionScreen extends React.Component {
 				});
 			})
 			.catch(error => {
-				console.error(error);
+				Alert.alert("Error","No Internet connection");
 			});
 
 
@@ -585,8 +585,9 @@ const styles = StyleSheet.create({
 });
 
 function mapStateToProps(state) {
+	console.log(state);
 	return {
-		wallets: state.wallets
+		wallets: state.wallets.wallets
 	};
 }
 export default connect(

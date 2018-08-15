@@ -71,7 +71,7 @@ class FilterScreen extends Component<Props> {
 				this.setState({ response: responseJson });
 			})
 			.catch(error => {
-				console.error(error);
+				Alert.alert("Error","No Internet connection");
 			});
 	};
 
@@ -378,7 +378,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
 	return {
-		wallets: state.wallets
+		wallets: state.wallets.wallets
 	};
 }
 
