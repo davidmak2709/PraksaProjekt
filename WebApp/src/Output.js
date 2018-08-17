@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Dropdown from 'react-dropdown';
+import DatePicker from 'react-date-picker';
 import './Output.css';
+
 
 var options = [];
 var optionscurr = [{ value: "HRK", label: "HRK"},
@@ -38,10 +40,13 @@ constructor(props){
   renderwallets:false,
   selectedOption: null,
   selectedOptioncurr: null,
+  date: new Date(),
   };
 this.handleChange = this.handleChange.bind(this);
 this.handleSubmit = this.handleSubmit.bind(this);
  }
+
+  onChange = date => this.setState({ date })
 
   componentDidMount() {
     var self = this;
@@ -84,6 +89,8 @@ handleSubmit(event) {
   var recurring;
   if (document.getElementById('recurring').checked) recurring=true;
   else recurring=false;
+  var datum = this.state.date
+
 
   instance.post('/wallets/transactions/create/',{
     wallet: this.state.selectedOption.value,
@@ -92,6 +99,7 @@ handleSubmit(event) {
     currency: this.state.currency,
     category: this.state.category,
     recurring: recurring,
+    date: datum.toISOString().slice(0,10),
   })
    .then(function (response) {
       //dohvacanje tokena i spremanje u session
@@ -152,10 +160,20 @@ renderaddform(){
           <label>
             <input type="text" id="category" value={this.state.category} onChange={this.handleChange} readonly="readonly"/>
           </label>
+          <div>
+          <label>
+            Date:
+          </label>
+           <DatePicker
+             onChange={this.onChange}
+             value={this.state.date}
+           />
+         </div>
           <label>
           Recurring:
-            <input type="checkbox" id="recurring" value="0" />
           </label>
+          <input type="checkbox" id="recurring" value="0" />
+
           <input type="submit" value="Submit" />
         </form>
       );
@@ -167,9 +185,6 @@ renderwallet(){
 
       <Dropdown options={options} onChange={this.handleSelect}  placeholder="Select a wallet" />
 
-
-
-
    );
 }
 
@@ -179,7 +194,6 @@ render() {
       <div id="div_trans">
       {this.renderaddform()}
       <hr />
-
       </div>
     );
   }

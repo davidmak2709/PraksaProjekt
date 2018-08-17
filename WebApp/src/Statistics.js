@@ -7,6 +7,7 @@ import axios from 'axios';
 import {BootstrapTable,
        TableHeaderColumn} from 'react-bootstrap-table';
 import Dropdown from 'react-dropdown';
+import DatePicker from 'react-date-picker';
 
 var dataGraph2;
 
@@ -160,6 +161,8 @@ class Statistics extends Component {
     transactions: [],
     name: "",
     category: "",
+    date: new Date(),
+    enddate: new Date(),
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
@@ -169,6 +172,10 @@ class Statistics extends Component {
    handleClick(event) {
       this.getTransactions();
    }
+
+   onChange = date => this.setState({ date })
+
+   onChange2 = date => this.setState({ enddate: date })
 
    handleChange = event => {
      this.setState({
@@ -233,7 +240,26 @@ class Statistics extends Component {
                <input type="text" id="category" value={this.state.category} onChange={this.handleChange} readonly="readonly"/>
              </label>
              <button type="button" class="btn btn-warning" onClick={this.handleClick}>Filter</button>
+             <div>
+             <label>
+               Starting date:
+             </label>
+              <DatePicker
+                onChange={this.onChange}
+                value={this.state.date}
+              />
+            </div>
+            <div>
+            <label>
+              Ending date:
+            </label>
+             <DatePicker
+               onChange={this.onChange2}
+               value={this.state.enddate}
+             />
+           </div>
              </div>
+
            );
    }
 
@@ -254,9 +280,9 @@ class Statistics extends Component {
    }
 
   render() {
+    // <div id="chart-container"></div>
     return (
       <div>
-      <div id="chart-container"></div>
       {this.rendertransactions()}
       {this.renderFilter()}
       {this.renderModal()}
@@ -265,6 +291,7 @@ class Statistics extends Component {
   }
 
   getTransactions(){
+    console.log(this.state.date);
     var self = this;
     var instance = axios.create({
              baseURL: "http://46.101.226.120:8000/api/",
@@ -272,11 +299,16 @@ class Statistics extends Component {
              headers: {'Authorization': "Token "+this.state.token}
 
          });
+    var datum = this.state.date;
+    var datum2 = this.state.enddate;
+
     console.log(this.state.token);
     instance.get('/wallets/transactions/',{
       params: {
         name: this.state.name ,
         category: this.state.category,
+        date_after: datum.toISOString().slice(0,10),
+        date_before: datum2.toISOString().slice(0,10),
       }
     })
      .then(function (response) {
@@ -292,7 +324,8 @@ class Statistics extends Component {
   }
 
 componentDidMount() {
-  getData();
+  //getData();
+  this.state.date.setMonth(this.state.date.getMonth()-1);
   this.getTransactions();
 
   }
