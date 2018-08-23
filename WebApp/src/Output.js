@@ -35,9 +35,7 @@ constructor(props){
   balance:'',
   category:'',
   addform:false,
-  length:0,
   walletid:'',
-  renderwallets:false,
   selectedOption: null,
   selectedOptioncurr: null,
   date: new Date(),
@@ -61,9 +59,7 @@ this.handleSubmit = this.handleSubmit.bind(this);
      .then(function (response) {
        //dohvacanje svih walleta
         console.log(response);
-        self.setState({length:response.data.length});
         self.setState({wallets:response.data});
-        self.setState({renderwallets:true});
         console.log(self.state.wallets);
         console.log(options);
         for(var i = 0; i < self.state.wallets.length ; i++){

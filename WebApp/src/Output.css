@@ -94,3 +94,10 @@ button{
 label{
   margin-right:10px;
 }
+#date{
+  margin-bottom: 5px;
+}
+
+.graph{
+  margin-top: 10px;
+}

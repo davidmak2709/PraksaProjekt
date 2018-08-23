@@ -10,7 +10,7 @@ import Dropdown from 'react-dropdown';
 import DatePicker from 'react-date-picker';
 
 var dataGraph2;
-
+var options = [{value: "" , label:'all'},];
 var optionsCategories = [{value: '' , label:'all' },
                         {value: 'paycheck' , label: 'paycheck'},
                         { value: 'gasoline', label: 'gasoline'},
@@ -99,8 +99,6 @@ tgl.onclick = function(){
     });
     modal.style.display = "none";
 }
-
-
   }
 }
 
@@ -163,6 +161,9 @@ class Statistics extends Component {
     category: "",
     date: new Date(),
     enddate: new Date(),
+    walletid: "",
+    walletlabel:"",
+    wallets: [],
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
@@ -176,6 +177,13 @@ class Statistics extends Component {
    onChange = date => this.setState({ date })
 
    onChange2 = date => this.setState({ enddate: date })
+
+   handleSelect = (selectedOption) => {
+
+     this.setState({walletid:selectedOption.value});
+     this.setState({walletlabel:selectedOption.label});
+     console.log(`Option selected:`, selectedOption);
+   }
 
    handleChange = event => {
      this.setState({
@@ -235,12 +243,15 @@ class Statistics extends Component {
                Name:
                <input type="text" id="name" value={this.state.name} onChange={this.handleChange} />
              </label>
+             <Dropdown options={options} onChange={this.handleSelect}  placeholder="Select a wallet" />
+             <label>
+               <input type="text" id="wallet" value={this.state.walletlabel} onChange={this.handleChange} readonly="readonly"/>
+             </label>
              <Dropdown id="category" options={optionsCategories} onChange={this.handleSelected}  placeholder="Select a category" />
              <label>
                <input type="text" id="category" value={this.state.category} onChange={this.handleChange} readonly="readonly"/>
              </label>
-             <button type="button" class="btn btn-warning" onClick={this.handleClick}>Filter</button>
-             <div>
+             <div id="date">
              <label>
                Starting date:
              </label>
@@ -249,7 +260,7 @@ class Statistics extends Component {
                 value={this.state.date}
               />
             </div>
-            <div>
+            <div id="date">
             <label>
               Ending date:
             </label>
@@ -258,6 +269,8 @@ class Statistics extends Component {
                value={this.state.enddate}
              />
            </div>
+           <button type="button" class="btn btn-warning" onClick={this.handleClick}>Filter</button>
+
              </div>
 
            );
@@ -309,6 +322,7 @@ class Statistics extends Component {
         category: this.state.category,
         date_after: datum.toISOString().slice(0,10),
         date_before: datum2.toISOString().slice(0,10),
+        wallet: this.state.walletid,
       }
     })
      .then(function (response) {
@@ -322,9 +336,34 @@ class Statistics extends Component {
         console.log(error);
       });
   }
+  getWallets(){
+    var self = this;
+    var instance = axios.create({
+             baseURL: "http://46.101.226.120:8000/api/",
+             timeout: 4000,
+             headers: {'Authorization': "Token "+this.state.token}
+
+         });
+    console.log(this.state.token);
+    instance.get('/wallets/ ')
+     .then(function (response) {
+       //dohvacanje svih walleta
+        console.log(response);
+        self.setState({wallets:response.data});
+        console.log(self.state.wallets);
+        console.log(options);
+        for(var i = 0; i < self.state.wallets.length ; i++){
+            var obj = JSON.parse('{ "value": '+ self.state.wallets[i].pk + ', "label": "'+ self.state.wallets[i].name + '"}')
+            options.push(obj);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
 
 componentDidMount() {
-  //getData();
+  this.getWallets();
   this.state.date.setMonth(this.state.date.getMonth()-1);
   this.getTransactions();
 

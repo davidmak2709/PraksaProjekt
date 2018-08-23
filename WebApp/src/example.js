@@ -1,11 +1,5 @@
 import React from 'react';
-import Dropdown from 'react-dropdown';
 
-const options = [
-  { value: 'chocolate', label: 'Chocolate' },
-  { value: 'strawberry', label: 'Strawberry' },
-  { value: 'vanilla', label: 'Vanilla' }
-];
 
 class example extends React.Component {
   state = {

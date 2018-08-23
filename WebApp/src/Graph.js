@@ -53,6 +53,9 @@ function drawGraphOUT(){
        {caption:"Outcome",
        subCaption:"",
        numberPrefix:"%",
+       showPercentInTooltip: "0",
+       decimals: "1",
+       placecalueinside:1,
        theme:"ocean"}
        ,data:data_out};
   Charts(FusionCharts);
